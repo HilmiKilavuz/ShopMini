@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +42,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val isloadingNextPage by viewModel.isLoadingNextPage.collectAsState()
     Column(modifier = Modifier.fillMaxSize().padding(top = 16.dp)) {
 
         LazyRow(
@@ -87,8 +91,26 @@ fun HomeScreen(
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(products) { product ->
+                        itemsIndexed(products) { index,product ->
+                            if(index==products.lastIndex){
+                                LaunchedEffect(Unit) {
+                                    viewModel.loadPage()
+                                }
+
+                            }
                             ProductCard(product)
+                        }
+                        if (isloadingNextPage) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                         }
                     }
 
