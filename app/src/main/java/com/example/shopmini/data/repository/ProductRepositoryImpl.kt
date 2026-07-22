@@ -20,7 +20,8 @@ class ProductRepositoryImpl @Inject constructor(
                     title = it.title,
                     description = it.description,
                     price = it.price,
-                    thumbnail = it.thumbnail
+                    thumbnail = it.thumbnail,
+                    discountPercentage = it.discountPercentage
                 )
             }
 
@@ -32,7 +33,8 @@ class ProductRepositoryImpl @Inject constructor(
                 title = it.title,
                 description = it.description,
                 price = it.price,
-                thumbnail = it.thumbnail
+                thumbnail = it.thumbnail,
+                discountPercentage = it.discountPercentage
             )
         })
         return remoteProducts
