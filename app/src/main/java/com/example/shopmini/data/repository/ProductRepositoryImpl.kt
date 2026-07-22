@@ -2,10 +2,12 @@ package com.example.shopmini.data.repository
 
 import com.example.shopmini.data.local.ProductDao
 import com.example.shopmini.data.local.ProductEntity
+import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.data.model.Product
 import com.example.shopmini.data.remote.ShopMiniApi
 import com.example.shopmini.domain.repository.ProductRepository
 import javax.inject.Inject
+import kotlin.String
 
 class ProductRepositoryImpl @Inject constructor(
     private val api: ShopMiniApi,
@@ -21,7 +23,8 @@ class ProductRepositoryImpl @Inject constructor(
                     description = it.description,
                     price = it.price,
                     thumbnail = it.thumbnail,
-                    discountPercentage = it.discountPercentage
+                    discountPercentage = it.discountPercentage,
+                    category= it.category
                 )
             }
 
@@ -34,11 +37,22 @@ class ProductRepositoryImpl @Inject constructor(
                 description = it.description,
                 price = it.price,
                 thumbnail = it.thumbnail,
-                discountPercentage = it.discountPercentage
+                discountPercentage = it.discountPercentage,
+                category= it.category
             )
         })
         return remoteProducts
 
+
+    }
+
+    override suspend fun getCategories(): List<CategoryDto> {
+        return  api.getCategories()
+
+    }
+
+    override suspend fun getProductsByCategory(slug: String): List<Product> {
+        return api.getProductsByCategory(slug).products
 
     }
 
