@@ -19,6 +19,10 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+
     init {
         loadProducts()
     }
@@ -26,14 +30,17 @@ class HomeViewModel @Inject constructor(
     fun loadProducts() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
+            _isRefreshing.value = true
             try {
                 val products = repository.getProducts()
                 _uiState.value = HomeUiState.Success(products)
             } catch (e: Exception) {
                 _uiState.value = HomeUiState.Error(e.message ?: "Unknown error")
-
+            } finally {
+                _isRefreshing.value = false
 
             }
+
 
         }
 

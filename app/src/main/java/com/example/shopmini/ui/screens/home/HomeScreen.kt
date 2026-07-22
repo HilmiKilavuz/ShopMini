@@ -15,6 +15,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +29,7 @@ import com.example.shopmini.ui.components.ProductCard
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     when (uiState) {
         is HomeUiState.Loading -> {
@@ -40,13 +43,22 @@ fun HomeScreen(
 
         is HomeUiState.Success -> {
             val products = (uiState as HomeUiState.Success).products
-
-            LazyVerticalGrid(columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-                items(products) { product ->
-                    ProductCard(product)
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { viewModel.loadProducts() }) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    items(products) { product ->
+                        ProductCard(product)
+                    }
                 }
+
             }
+
 
         }
 
