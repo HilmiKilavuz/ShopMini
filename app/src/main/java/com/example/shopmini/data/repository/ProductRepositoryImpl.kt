@@ -12,24 +12,28 @@ import kotlin.String
 class ProductRepositoryImpl @Inject constructor(
     private val api: ShopMiniApi,
     private val dao: ProductDao
-): ProductRepository {
-    override suspend fun getProducts(): List<Product> {
-        val localProducts = dao.getAllProducts()
-        if(localProducts.isNotEmpty()) {
-            return localProducts.map {
-                Product(
-                    id = it.id,
-                    title = it.title,
-                    description = it.description,
-                    price = it.price,
-                    thumbnail = it.thumbnail,
-                    discountPercentage = it.discountPercentage,
-                    category= it.category
-                )
-            }
+) : ProductRepository {
+    override suspend fun getProducts(limit: Int, skip: Int): List<Product> {
+
+        if (skip == 0) {
+            val localProducts = dao.getAllProducts()
+            if (localProducts.isNotEmpty()) {
+                return localProducts.map {
+                    Product(
+                        id = it.id,
+                        title = it.title,
+                        description = it.description,
+                        price = it.price,
+                        thumbnail = it.thumbnail,
+                        discountPercentage = it.discountPercentage,
+                        category = it.category
+                    )
+                }
 
             }
-        val remoteProducts = api.getProducts().products
+        }
+
+        val remoteProducts = api.getProducts(limit,skip).products
         dao.insertProducts(remoteProducts.map {
             ProductEntity(
                 id = it.id,
@@ -38,7 +42,7 @@ class ProductRepositoryImpl @Inject constructor(
                 price = it.price,
                 thumbnail = it.thumbnail,
                 discountPercentage = it.discountPercentage,
-                category= it.category
+                category = it.category
             )
         })
         return remoteProducts
@@ -47,12 +51,12 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCategories(): List<CategoryDto> {
-        return  api.getCategories()
+        return api.getCategories()
 
     }
 
-    override suspend fun getProductsByCategory(slug: String): List<Product> {
-        return api.getProductsByCategory(slug).products
+    override suspend fun getProductsByCategory(slug: String, limit: Int, skip: Int): List<Product> {
+        return api.getProductsByCategory(slug, limit, skip).products
 
     }
 

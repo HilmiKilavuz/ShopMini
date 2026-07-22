@@ -28,6 +28,12 @@ class HomeViewModel @Inject constructor(
     private val _selectedCategory = MutableStateFlow<String?>(null)
     val selectedCategory: StateFlow<String?> = _selectedCategory.asStateFlow()
 
+    private var currentSkip = 0
+    private val limit = 20
+
+    private val _isLoadingNextPage = MutableStateFlow(false)
+    val isLoadingNextPage: StateFlow<Boolean> = _isLoadingNextPage.asStateFlow()
+
 
     init {
         loadProducts()
@@ -36,10 +42,13 @@ class HomeViewModel @Inject constructor(
 
     fun loadProducts() {
         viewModelScope.launch {
+
             _uiState.value = HomeUiState.Loading
             _isRefreshing.value = true
             try {
+
                 val products = repository.getProducts()
+                currentSkip = products.size
                 _uiState.value = HomeUiState.Success(products)
             } catch (e: Exception) {
                 _uiState.value = HomeUiState.Error(e.message ?: "Unknown error")
@@ -60,6 +69,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
+
                 _categories.value = repository.getCategories()
 
             } catch (e: Exception) {
@@ -73,6 +83,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _isRefreshing.value = true
             try {
+                currentSkip = 0
                 val products = if (slug == null) {
                     repository.getProducts()
 
@@ -80,7 +91,7 @@ class HomeViewModel @Inject constructor(
                     repository.getProductsByCategory(slug)
 
                 }
-
+                currentSkip = products.size
                 _uiState.value = HomeUiState.Success(products)
 
             } catch (e: Exception) {
@@ -96,5 +107,38 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    fun loadPage() {
+        if (_isLoadingNextPage.value || _uiState.value !is HomeUiState.Success) {
+            return
+        }
+        val currentProduct = (_uiState.value as HomeUiState.Success).products
+        viewModelScope.launch {
+            _isLoadingNextPage.value = true
+
+            try {
+
+                val newProducts = if (selectedCategory.value == null) {
+                    repository.getProducts(skip = currentSkip, limit = limit)
+
+                } else {
+                    repository.getProductsByCategory(_selectedCategory.value!!,skip = currentSkip, limit = limit)
+
+                }
+                currentSkip += newProducts.size
+
+                _uiState.value = HomeUiState.Success(currentProduct + newProducts)
+
+
+            } catch (e: Exception) {
+                _uiState.value = HomeUiState.Error(e.message ?: "Hata")
+
+
+            } finally {
+                _isLoadingNextPage.value = false
+            }
+
+
+        }
+    }
 }
 
