@@ -24,11 +24,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.shopmini.ui.screens.home.HomeUiState
 
+/**
+ * UI Katmanı.
+ * Ürünün tüm detaylarının gösterildiği ekrandır.
+ * ViewModel'dan gelen State (Durum) bilgisine göre sayfayı çizer.
+ */
 @Composable
 fun ProductDetailScreen(
     viewModel: ProductDetailViewModel = hiltViewModel(),
+    // Kullanıcı geri butonuna bastığında NavHost'un popBackStack fonksiyonunu tetikleyecek
     onBackClick: () -> Unit
 ) {
+    // ViewModel'daki anlık durumu dinliyoruz
     val uiState by viewModel.uiState.collectAsState()
     when (uiState) {
         is ProductDetailUiState.Loading -> {

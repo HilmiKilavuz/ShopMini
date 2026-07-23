@@ -11,16 +11,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Ürün Detay Ekranının beynidir.
+ * Ekranın ihtiyaç duyduğu veriyi Repository'den çeker ve UiState üzerinden ekrana sunar.
+ */
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val productRepository: ProductRepository,
+    // Navigasyon sırasında gönderilen parametreleri havada yakalamamızı sağlar
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // Ekranın dinleyeceği değişken durum (State)
     private val _uiState= MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
 
     init {
+        // Navigasyondan gelen "productId" değerini alıyoruz
         val productId = savedStateHandle.get<Int>("productId")
         if (productId != null) {
             loadProductDetail(productId)

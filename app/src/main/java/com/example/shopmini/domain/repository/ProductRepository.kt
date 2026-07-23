@@ -27,5 +27,8 @@ interface ProductRepository {
      */
     suspend fun getProductsByCategory(slug: String, limit: Int = 20, skip: Int = 0): List<Product>
 
+    /**
+     * Belirli bir ürünün tüm detaylarını ID'sine göre getirir.
+     */
     suspend fun getProductById(id: Int): Product
 }

@@ -34,17 +34,17 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-
+                    // Uygulamanın navigasyon yöneticisini (şoförünü) oluşturuyoruz
                     val navController = rememberNavController()
 
-
+                    // Ekranlar arası geçiş haritasını (NavHost) kuruyoruz
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Home,
+                        startDestination = Screen.Home, // Uygulama açıldığında ilk burası başlar
                         modifier = Modifier.padding(innerPadding)
                     ) {
 
-
+                        // 1. Rota: Ana Ekran
                         composable<Screen.Home> {
                             HomeScreen(
                                 onProductClick = { tiklananId ->
@@ -53,10 +53,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        // 2. Rota: Detay Ekranı
                         composable<Screen.ProductDetailScreen> {
                             ProductDetailScreen(
                                 onBackClick = {
-
+                                    // Geri butonuna basıldığında bir önceki sayfaya döner
                                     navController.popBackStack()
                                 }
                             )

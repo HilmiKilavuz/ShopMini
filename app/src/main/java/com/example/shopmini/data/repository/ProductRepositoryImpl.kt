@@ -73,6 +73,11 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
 
+    /**
+     * Belirli bir ürünü getirir.
+     * Çalışma Mantığı: Önce Room (Yerel) veritabanına bakar.
+     * Eğer ürün Room'da varsa oradan döndürür, yoksa API'den (İnternetten) çeker.
+     */
     override suspend fun getProductById(id: Int): Product {
         val localProduct = dao.getProductById(id)
         if (localProduct != null) {
