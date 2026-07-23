@@ -22,7 +22,7 @@ class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // Ekranın dinleyeceği değişken durum (State)
+    // Ekranın dinleyeceği değişken durum
     private val _uiState= MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
 
@@ -36,6 +36,8 @@ class ProductDetailViewModel @Inject constructor(
         }
 
     }
+
+    // Veriyi yüklemek için kullanılan fonksiyon
     fun loadProductDetail(id :Int){
         viewModelScope.launch{
             _uiState.value = ProductDetailUiState.Loading
