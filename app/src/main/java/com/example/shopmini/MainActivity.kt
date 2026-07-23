@@ -1,3 +1,7 @@
+/**
+ * Uygulamanın tek Activity'sidir.
+ * Jetpack Compose UI'ın başlatıldığı ana ekrandır.
+ */
 package com.example.shopmini
 
 import android.os.Bundle

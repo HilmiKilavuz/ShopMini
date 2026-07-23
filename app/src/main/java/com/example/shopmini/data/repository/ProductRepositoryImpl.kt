@@ -1,3 +1,8 @@
+/**
+ * DATA Katmanı .
+ * ProductRepository sözleşmesini uygular.
+ * Single Source of Truth: Önce Room'a bakar, yoksa API'den çeker ve Room'a kaydeder.
+ */
 package com.example.shopmini.data.repository
 
 import com.example.shopmini.data.local.ProductDao
@@ -13,6 +18,15 @@ class ProductRepositoryImpl @Inject constructor(
     private val api: ShopMiniApi,
     private val dao: ProductDao
 ) : ProductRepository {
+
+    /**
+     * Tüm ürünleri getirir.
+     * Çalışma Mantığı (Single Source of Truth):
+     * 1. Eğer ilk sayfa isteniyorsa (skip == 0), önce Room veritabanına bakar.
+     * 2. Room'da veri varsa hemen onu döndürür.
+     * 3. Ardından (veya Room boşsa) API'ye istek atar.
+     * 4. API'den gelen güncel verileri Room veritabanına kaydeder ve listeyi döndürür.
+     */
     override suspend fun getProducts(limit: Int, skip: Int): List<Product> {
 
         if (skip == 0) {
@@ -50,11 +64,9 @@ class ProductRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getCategories(): List<CategoryDto> {
-        return api.getCategories()
-
-    }
-
+    /**
+     * Kategoriye özel ürünleri getirir.
+     */
     override suspend fun getProductsByCategory(slug: String, limit: Int, skip: Int): List<Product> {
         return api.getProductsByCategory(slug, limit, skip).products
 

@@ -1,3 +1,7 @@
+/**
+ * DI Katmanı .
+ * Hilt'e Retrofit ve OkHttp  nesnelerini nasıl oluşturacağını öğretir.
+ */
 package com.example.shopmini.di
 
 import com.example.shopmini.data.remote.ShopMiniApi
@@ -14,12 +18,20 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    /**
+     * API'den dönen JSON verilerini Kotlin objelerine çevirmek için
+     * kotlinx.serialization ayarlarını yapılandırır.
+     */
     @Provides
     @Singleton
     fun provideJson(): Json {
         return Json { ignoreUnknownKeys = true }
     }
 
+    /**
+     * İnternet bağlantısını yönetecek Retrofit nesnesini oluşturur.
+     * baseUrl olarak "https://dummyjson.com/" atanmıştır.
+     */
     @Provides
     @Singleton
     fun provideRetrofit(json: Json): Retrofit {
@@ -30,6 +42,10 @@ object NetworkModule {
             .build()
     }
 
+    /**
+     * Repository sınıflarının veri çekerken kullanacağı 
+     * ShopMiniApi (İstek listesi) arayüzünü oluşturur.
+     */
     @Provides
     @Singleton
     fun provideShopMiniApi(retrofit: Retrofit): ShopMiniApi {

@@ -1,4 +1,9 @@
+/**
+ * UI Katmanı.
+ * Liste içindeki tek bir ürünün nasıl görüneceğini tasarlayan Compose bileşenidir.
+ */
 package com.example.shopmini.ui.components
+
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,6 +78,7 @@ fun ProductCard(product: Product) {
     }
 
 }
+
 
 
 

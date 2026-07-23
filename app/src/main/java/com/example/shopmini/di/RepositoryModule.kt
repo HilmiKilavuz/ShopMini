@@ -1,3 +1,7 @@
+/**
+ * DI Katmanı .
+ * Biri ProductRepository istediğinde ona ProductRepositoryImpl verilmesi gerektiğini söyler.
+ */
 package com.example.shopmini.di
 
 import com.example.shopmini.data.repository.ProductRepositoryImpl
