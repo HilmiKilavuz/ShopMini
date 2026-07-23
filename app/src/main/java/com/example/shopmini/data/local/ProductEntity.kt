@@ -1,3 +1,7 @@
+/**
+ * DATA Katmanı.
+ * Room veritabanında saklanacak Tablonun şeklini belirler.
+ */
 package com.example.shopmini.data.local
 
 import androidx.room.Entity

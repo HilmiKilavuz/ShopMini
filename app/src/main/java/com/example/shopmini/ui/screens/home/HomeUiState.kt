@@ -1,3 +1,7 @@
+/**
+ * UI Katmanı.
+ * Ana ekranın anlık durumunu tutan sınıftır.
+ */
 package com.example.shopmini.ui.screens.home
 
 import com.example.shopmini.data.model.Product

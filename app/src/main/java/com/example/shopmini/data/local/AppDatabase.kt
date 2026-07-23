@@ -1,3 +1,7 @@
+/**
+ * DATA Katmanı .
+ * Cihazın içindeki yerel veritabanı (Room) yapılandırmasıdır.
+ */
 package com.example.shopmini.data.local
 
 import androidx.room.Database

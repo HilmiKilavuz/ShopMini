@@ -1,3 +1,7 @@
+/**
+ * DATA Katmanı.
+ * API'den dönecek Kategori verisini karşılayar.
+ */
 package com.example.shopmini.data.model
 
 import kotlinx.serialization.Serializable
@@ -5,8 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoryDto(
-    val slug: String,   // URL'de kullanılan kısa isim (örn: "smartphones")
-    val name: String,   // Görünen isim (örn: "Smartphones")
-    val url: String     // Tam API adresi (bize lazım olmayacak ama API gönderiyor)
+    val slug: String,
+    val name: String,
+    val url: String
 )
-

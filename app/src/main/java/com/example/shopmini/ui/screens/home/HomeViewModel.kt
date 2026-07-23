@@ -1,3 +1,8 @@
+/**
+ * UI Katmanı (Garson).
+ * HomeScreen'in mantığını yönetir.
+ * Repository'den veriyi ister ve sonucu HomeUiState olarak ekrana iletir.
+ */
 package com.example.shopmini.ui.screens.home
 
 
@@ -5,6 +10,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopmini.data.model.CategoryDto
+import com.example.shopmini.domain.repository.CategoryRepository
 import com.example.shopmini.domain.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: ProductRepository
+    private val productrepository: ProductRepository,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -40,6 +47,10 @@ class HomeViewModel @Inject constructor(
         loadCategories()
     }
 
+    /**
+     * Uygulama açıldığında veya pull-to-refresh  yapıldığında
+     * ürünlerin sıfırdan yüklenmesini sağlar.
+     */
     fun loadProducts() {
         viewModelScope.launch {
 
@@ -47,7 +58,7 @@ class HomeViewModel @Inject constructor(
             _isRefreshing.value = true
             try {
 
-                val products = repository.getProducts()
+                val products = productrepository.getProducts()
                 currentSkip = products.size
                 _uiState.value = HomeUiState.Success(products)
             } catch (e: Exception) {
@@ -63,6 +74,9 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    /**
+     * Kategori isimlerini  ekrana basmak için kategorileri getirir.
+     */
     private fun loadCategories() {
 
 
@@ -70,7 +84,7 @@ class HomeViewModel @Inject constructor(
 
             try {
 
-                _categories.value = repository.getCategories()
+                _categories.value = categoryRepository.getCategories()
 
             } catch (e: Exception) {
 
@@ -78,6 +92,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Kullanıcı üstteki yatay menüden bir kategoriye tıkladığında çalışır.
+     * Seçilen kategoriye ait ürünleri filtreleyerek getirir.
+     */
     fun onCategorySelected(slug: String?) {
         _selectedCategory.value = slug
         viewModelScope.launch {
@@ -85,10 +103,10 @@ class HomeViewModel @Inject constructor(
             try {
                 currentSkip = 0
                 val products = if (slug == null) {
-                    repository.getProducts()
+                    productrepository.getProducts()
 
                 } else {
-                    repository.getProductsByCategory(slug)
+                    productrepository.getProductsByCategory(slug)
 
                 }
                 currentSkip = products.size
@@ -107,8 +125,12 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    /**
+     * Kullanıcı sayfanın  en altına kaydırdığında
+     * bir sonraki sayfayı  yüklemek için çalışır.
+     */
     fun loadPage() {
-        if (_isLoadingNextPage.value || _uiState.value !is HomeUiState.Success) {
+        if (isLoadingNextPage.value || uiState.value !is HomeUiState.Success) {
             return
         }
         val currentProduct = (_uiState.value as HomeUiState.Success).products
@@ -118,10 +140,10 @@ class HomeViewModel @Inject constructor(
             try {
 
                 val newProducts = if (selectedCategory.value == null) {
-                    repository.getProducts(skip = currentSkip, limit = limit)
+                   productrepository.getProducts(skip = currentSkip, limit = limit)
 
                 } else {
-                    repository.getProductsByCategory(_selectedCategory.value!!,skip = currentSkip, limit = limit)
+                    productrepository.getProductsByCategory(_selectedCategory.value!!,skip = currentSkip, limit = limit)
 
                 }
                 currentSkip += newProducts.size
@@ -141,4 +163,3 @@ class HomeViewModel @Inject constructor(
         }
     }
 }
-

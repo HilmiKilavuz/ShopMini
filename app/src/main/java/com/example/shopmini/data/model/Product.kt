@@ -1,3 +1,7 @@
+/**
+ * DATA Katmanı.
+ * Ürün verisini tutan ana modeldir. (API'den veya Local DB'den geldiğinde bu modele dönüşür).
+ */
 package com.example.shopmini.data.model
 
 import kotlinx.serialization.Serializable
