@@ -47,7 +47,7 @@ class ProductRepositoryImpl @Inject constructor(
             }
         }
 
-        val remoteProducts = api.getProducts(limit,skip).products
+        val remoteProducts = api.getProducts(limit, skip).products
         dao.insertProducts(remoteProducts.map {
             ProductEntity(
                 id = it.id,
@@ -69,6 +69,30 @@ class ProductRepositoryImpl @Inject constructor(
      */
     override suspend fun getProductsByCategory(slug: String, limit: Int, skip: Int): List<Product> {
         return api.getProductsByCategory(slug, limit, skip).products
+
+    }
+
+
+    override suspend fun getProductById(id: Int): Product {
+        val localProduct = dao.getProductById(id)
+        if (localProduct != null) {
+            return localProduct.let {
+                Product(
+                    id = it.id,
+                    title = it.title,
+                    description = it.description,
+                    price = it.price,
+                    thumbnail = it.thumbnail,
+                    discountPercentage = it.discountPercentage,
+                    category = it.category
+                )
+            }
+
+
+        }
+        val remoteProduct = api.getProductById(id)
+        return remoteProduct
+
 
     }
 

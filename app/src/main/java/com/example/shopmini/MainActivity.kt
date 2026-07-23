@@ -15,6 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.shopmini.ui.navigation.Screen
+import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,24 +31,43 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ShopMiniTheme {
-               HomeScreen()
+
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+
+                    val navController = rememberNavController()
+
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Home,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+
+
+                        composable<Screen.Home> {
+                            HomeScreen(
+                                onProductClick = { tiklananId ->
+                                    navController.navigate(Screen.ProductDetailScreen(productId = tiklananId))
+                                }
+                            )
+                        }
+
+                        composable<Screen.ProductDetailScreen> {
+                            ProductDetailScreen(
+                                onBackClick = {
+
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
+
+                }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ShopMiniTheme {
-        Greeting("Android")
-    }
-}
+

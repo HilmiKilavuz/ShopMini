@@ -26,4 +26,6 @@ interface ProductRepository {
      * @return İlgili kategoriye ait ürün listesi
      */
     suspend fun getProductsByCategory(slug: String, limit: Int = 20, skip: Int = 0): List<Product>
+
+    suspend fun getProductById(id: Int): Product
 }
