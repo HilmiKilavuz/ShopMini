@@ -8,6 +8,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.shopmini.data.local.AppDatabase
 import com.example.shopmini.data.local.ProductDao
+import com.example.shopmini.data.local.SearchHistoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,11 +26,11 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "shopmini_db"
-        ).build()
+        return (Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "shopmini_db"
+            ).fallbackToDestructiveMigration(false).build())
     }
 
     /**
@@ -40,6 +41,16 @@ object DatabaseModule {
     @Singleton
     fun provideProductDao(database: AppDatabase): ProductDao {
         return database.productDao()
+    }
+    /**
+     * Repository sınıflarının ihtiyaç duyduğu SearchHistoryDao nesnesini
+     * AppDatabase üzerinden oluşturarak Hilt'e sunar.
+     */
+    @Provides
+    @Singleton
+    fun provideSearchHistoryDao(database: AppDatabase): SearchHistoryDao {
+        return database.searchHistoryDao()
+
     }
 
 }

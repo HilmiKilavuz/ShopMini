@@ -9,20 +9,25 @@ package com.example.shopmini.ui.screens.home
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shopmini.data.local.SearchHistoryEntity
 import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.domain.repository.CategoryRepository
 import com.example.shopmini.domain.repository.ProductRepository
+import com.example.shopmini.domain.repository.SearchHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val productrepository: ProductRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val searchHistoryRepository: SearchHistoryRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -37,15 +42,22 @@ class HomeViewModel @Inject constructor(
     private val _isLoadingNextPage = MutableStateFlow(false)
     val isLoadingNextPage: StateFlow<Boolean> = _isLoadingNextPage.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow<String>("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+     val searchHistory = searchHistoryRepository.getRecentSearches()
+
     private var currentSkip = 0
     private val limit = 20
-
-
 
 
     init {
         loadProducts()
         loadCategories()
+        searchProducts()
+
+
+
     }
 
     /**
@@ -78,7 +90,7 @@ class HomeViewModel @Inject constructor(
     /**
      * Kategori isimlerini  ekrana basmak için kategorileri getirir.
      */
- fun loadCategories() {
+    fun loadCategories() {
 
 
         viewModelScope.launch {
@@ -141,10 +153,14 @@ class HomeViewModel @Inject constructor(
             try {
 
                 val newProducts = if (selectedCategory.value == null) {
-                   productrepository.getProducts(skip = currentSkip, limit = limit)
+                    productrepository.getProducts(skip = currentSkip, limit = limit)
 
                 } else {
-                    productrepository.getProductsByCategory(_selectedCategory.value!!,skip = currentSkip, limit = limit)
+                    productrepository.getProductsByCategory(
+                        _selectedCategory.value!!,
+                        skip = currentSkip,
+                        limit = limit
+                    )
 
                 }
                 currentSkip += newProducts.size
@@ -165,4 +181,46 @@ class HomeViewModel @Inject constructor(
 
         }
     }
+
+    fun deleteSearchHistory(entity: SearchHistoryEntity){
+        viewModelScope.launch {
+            searchHistoryRepository.deleteSearch(entity)
+        }
+    }
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
+        if (query.isBlank()) {
+            loadProducts()
+        }
+    }
+    fun searchProducts() {
+        viewModelScope.launch {
+            _searchQuery
+                .debounce(500)
+                .filter { it.isNotBlank() }
+                .collect { query ->
+                    try {
+                        val products = searchHistoryRepository.searchProducts(query)
+                        _uiState.value = HomeUiState.Success(products)
+
+                    } catch (e: Exception) {
+                        _uiState.value = HomeUiState.Error(e.message ?: "Arama hatası")
+                    }
+                }
+        }
+    }
+
+    fun saveSearchQuery(query: String) {
+        if (query.isNotBlank()) {
+            viewModelScope.launch {
+                searchHistoryRepository.insertSearch(
+                    SearchHistoryEntity(id = 0, query = query, timestamp = System.currentTimeMillis())
+                )
+            }
+        }
+    }
+
+
+
+
 }

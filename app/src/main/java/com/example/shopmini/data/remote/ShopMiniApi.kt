@@ -13,7 +13,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 
-interface ShopMiniApi {
+interface  ShopMiniApi {
     /**
      * Tüm ürünleri sayfalı olarak  getirir.
      * İstek atılan adres: GET /products?limit={limit}&skip={skip}
@@ -49,4 +49,7 @@ interface ShopMiniApi {
      */
     @GET("products/{id}")
     suspend fun getProductById(@Path("id") id: Int): Product
+
+    @GET("products/search")
+    suspend fun searchProducts(@Query("q") query: String): ProductResponse
 }
