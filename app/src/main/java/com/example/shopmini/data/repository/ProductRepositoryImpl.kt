@@ -75,29 +75,35 @@ class ProductRepositoryImpl @Inject constructor(
 
     /**
      * Belirli bir ürünü getirir.
-     * Çalışma Mantığı: Önce Room (Yerel) veritabanına bakar.
-     * Eğer ürün Room'da varsa oradan döndürür, yoksa API'den (İnternetten) çeker.
+     * Çalışma Mantığı: Önce API'a  bakar.
+     * Eğer ürün API'da varsa oradan döndürür, yoksa ROOM'dan çeker.
      */
     override suspend fun getProductById(id: Int): Product {
-        val localProduct = dao.getProductById(id)
-        if (localProduct != null) {
-            return localProduct.let {
+        return try {
+
+            val remoteProduct = api.getProductById(id)
+            remoteProduct
+        } catch (e: Exception) {
+
+            val localProduct = dao.getProductById(id)
+
+            if (localProduct != null) {
+
                 Product(
-                    id = it.id,
-                    title = it.title,
-                    description = it.description,
-                    price = it.price,
-                    thumbnail = it.thumbnail,
-                    discountPercentage = it.discountPercentage,
-                    category = it.category
+                    id = localProduct.id,
+                    title = localProduct.title,
+                    description = localProduct.description,
+                    price = localProduct.price,
+                    thumbnail = localProduct.thumbnail,
+                    discountPercentage = localProduct.discountPercentage,
+                    category = localProduct.category,
+                    reviews = null
                 )
+            } else {
+
+                throw Exception("Ürün bulunamadı ve internet bağlantısı yok.")
             }
-
-
         }
-        val remoteProduct = api.getProductById(id)
-        return remoteProduct
-
 
     }
 
