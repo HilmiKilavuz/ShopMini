@@ -7,6 +7,8 @@ package com.example.shopmini.data.repository
 
 import com.example.shopmini.data.local.ProductDao
 import com.example.shopmini.data.local.ProductEntity
+import com.example.shopmini.data.mapper.toDomainModel
+import com.example.shopmini.data.mapper.toEntity
 import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.data.model.Product
 import com.example.shopmini.data.remote.ShopMiniApi
@@ -33,15 +35,7 @@ class ProductRepositoryImpl @Inject constructor(
             val localProducts = dao.getAllProducts()
             if (localProducts.isNotEmpty()) {
                 return localProducts.map {
-                    Product(
-                        id = it.id,
-                        title = it.title,
-                        description = it.description,
-                        price = it.price,
-                        thumbnail = it.thumbnail,
-                        discountPercentage = it.discountPercentage,
-                        category = it.category
-                    )
+                   it.toDomainModel()
                 }
 
             }
@@ -49,15 +43,7 @@ class ProductRepositoryImpl @Inject constructor(
 
         val remoteProducts = api.getProducts(limit, skip).products
         dao.insertProducts(remoteProducts.map {
-            ProductEntity(
-                id = it.id,
-                title = it.title,
-                description = it.description,
-                price = it.price,
-                thumbnail = it.thumbnail,
-                discountPercentage = it.discountPercentage,
-                category = it.category
-            )
+            it.toEntity()
         })
         return remoteProducts
 

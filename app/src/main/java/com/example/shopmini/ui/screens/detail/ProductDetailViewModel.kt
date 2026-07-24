@@ -25,6 +25,8 @@ class ProductDetailViewModel @Inject constructor(
     // Ekranın dinleyeceği değişken durum
     private val _uiState= MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     init {
         // Navigasyondan gelen "productId" değerini alıyoruz
@@ -41,11 +43,14 @@ class ProductDetailViewModel @Inject constructor(
     fun loadProductDetail(id :Int){
         viewModelScope.launch{
             _uiState.value = ProductDetailUiState.Loading
+            _isRefreshing.value = true
             try {
                 val product = productRepository.getProductById(id)
                 _uiState.value= ProductDetailUiState.Success(product)
             }catch (e: Exception){
                 _uiState.value = ProductDetailUiState.Error(e.message ?: "Unknown error")
+            }finally {
+                _isRefreshing.value = false
             }
 
         }

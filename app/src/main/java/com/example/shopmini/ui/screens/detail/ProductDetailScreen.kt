@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +47,7 @@ fun ProductDetailScreen(
     onBackClick: () -> Unit
 ) {
     // ViewModel'daki anlık durumu dinliyoruz
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     when (uiState) {
         is ProductDetailUiState.Loading -> {
@@ -74,79 +76,91 @@ fun ProductDetailScreen(
         is ProductDetailUiState.Success -> {
             val product = (uiState as ProductDetailUiState.Success).product
 
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    viewModel.loadProductDetail(product.id)
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Button(onClick = onBackClick,
-                    modifier = Modifier.wrapContentSize()) { Text("Geri Dön") }
-                Spacer(modifier = Modifier.height(16.dp))
-
-
+                }) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
+                    Button(onClick = onBackClick,
+                        modifier = Modifier.wrapContentSize()) { Text("Geri Dön") }
+                    Spacer(modifier = Modifier.height(16.dp))
 
 
-                    AsyncImage(
-                        model = product.thumbnail,
-                        contentDescription = product.title,
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp)
-                    )
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                    ) {
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = product.title, style = MaterialTheme.typography.headlineMedium)
 
-                    Text(text = product.description)
-
-                    // Yorumlar Bölümü
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (product.reviews == null) {
-                        Text(
-                            text = "Yorumlar Bulunamadı. İnternet Bağlantınızı Kontrol Edin.",
-                            color = Color.Gray,
-                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                        AsyncImage(
+                            model = product.thumbnail,
+                            contentDescription = product.title,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
                         )
-                    } else {
-                        Text(
-                            text = "Kullanıcı Yorumları",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        product.reviews.forEach { review ->
-                            ReviewCard(review = review)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = product.title, style = MaterialTheme.typography.headlineMedium)
+
+                        Text(text = product.description)
+
+                        // Yorumlar Bölümü
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (product.reviews == null) {
+                            Text(
+                                text = "Kullanıcı Yorumları",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Yorumlar Bulunamadı. İnternet Bağlantınızı Kontrol Edin.",
+                                color = Color.Gray,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            )
+                        } else {
+                            Text(
+                                text = "Kullanıcı Yorumları",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            product.reviews.forEach { review ->
+                                ReviewCard(review = review)
+                            }
                         }
+
+
                     }
 
 
-                }
-
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    AddToCartBtn(
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .height(50.dp)
-                    )
-                    AddFavoriteButton()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        AddToCartBtn(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .height(50.dp)
+                        )
+                        AddFavoriteButton()
+                    }
                 }
             }
+
+
+
         }
-
-
+        }
     }
 
 
-}
