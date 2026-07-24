@@ -34,12 +34,13 @@ class HomeViewModel @Inject constructor(
 
     private val _selectedCategory = MutableStateFlow<String?>(null)
     val selectedCategory: StateFlow<String?> = _selectedCategory.asStateFlow()
+    private val _isLoadingNextPage = MutableStateFlow(false)
+    val isLoadingNextPage: StateFlow<Boolean> = _isLoadingNextPage.asStateFlow()
 
     private var currentSkip = 0
     private val limit = 20
 
-    private val _isLoadingNextPage = MutableStateFlow(false)
-    val isLoadingNextPage: StateFlow<Boolean> = _isLoadingNextPage.asStateFlow()
+
 
 
     init {
@@ -77,7 +78,7 @@ class HomeViewModel @Inject constructor(
     /**
      * Kategori isimlerini  ekrana basmak için kategorileri getirir.
      */
-    private fun loadCategories() {
+ fun loadCategories() {
 
 
         viewModelScope.launch {
@@ -152,6 +153,8 @@ class HomeViewModel @Inject constructor(
 
 
             } catch (e: Exception) {
+                //// hata yazısı yerine hata mesajı gösterilebilir uygulama çökmesin
+
                 _uiState.value = HomeUiState.Error(e.message ?: "Hata")
 
 

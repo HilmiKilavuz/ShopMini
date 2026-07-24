@@ -88,7 +88,9 @@ fun HomeScreen(
                 val products = (uiState as HomeUiState.Success).products
                 PullToRefreshBox(
                     isRefreshing = isRefreshing,
-                    onRefresh = { viewModel.loadProducts() }) {
+                    onRefresh = { viewModel.loadProducts()
+                                  viewModel.loadCategories()
+                    }) {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier
