@@ -31,4 +31,9 @@ interface ProductDao {
     @Query("DELETE FROM products")
     suspend fun clearProducts()
 
+    /**
+     * Veritabanındaki istenilen ürünü getirir.
+     */
+    @Query("Select * from products where id = :id")
+    suspend fun getProductById(id: Int): ProductEntity?
 }

@@ -15,6 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.shopmini.ui.navigation.Screen
+import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,24 +31,44 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ShopMiniTheme {
-               HomeScreen()
+
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+                    // Uygulamanın navigasyon yöneticisini (şoförünü) oluşturuyoruz
+                    val navController = rememberNavController()
+
+                    // Ekranlar arası geçiş haritasını (NavHost) kuruyoruz
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Home, // Uygulama açıldığında ilk burası başlar
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+
+                        // 1. Rota: Ana Ekran
+                        composable<Screen.Home> {
+                            HomeScreen(
+                                onProductClick = { tiklananId ->
+                                    navController.navigate(Screen.ProductDetailScreen(productId = tiklananId))
+                                }
+                            )
+                        }
+
+                        // 2. Rota: Detay Ekranı
+                        composable<Screen.ProductDetailScreen> {
+                            ProductDetailScreen(
+                                onBackClick = {
+                                    // Geri butonuna basıldığında bir önceki sayfaya döner
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
+
+                }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ShopMiniTheme {
-        Greeting("Android")
-    }
-}
+

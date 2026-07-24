@@ -82,6 +82,9 @@ dependencies {
     
     // 9. Flow Testleri (Turbine)
     testImplementation("app.cash.turbine:turbine:1.1.0")
+    // Material Icons kütüphanesi
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

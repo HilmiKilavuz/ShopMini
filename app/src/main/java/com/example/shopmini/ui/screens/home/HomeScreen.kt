@@ -38,8 +38,10 @@ import com.example.shopmini.ui.components.ProductCard
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onProductClick: (Int) -> Unit
 ) {
+
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -100,7 +102,7 @@ fun HomeScreen(
                                 }
 
                             }
-                            ProductCard(product)
+                            ProductCard(product,onProductClick)
                         }
                         if (isloadingNextPage) {
                             item(span = { GridItemSpan(maxLineSpan) }) {

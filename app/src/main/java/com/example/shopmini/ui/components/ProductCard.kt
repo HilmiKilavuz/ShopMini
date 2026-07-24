@@ -5,6 +5,7 @@
 package com.example.shopmini.ui.components
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,11 +32,15 @@ import coil.compose.AsyncImage
 import com.example.shopmini.data.model.Product
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(
+    product: Product,
+    onProductClick: (Int) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onProductClick(product.id) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -52,13 +57,21 @@ fun ProductCard(product: Product) {
                 contentScale = ContentScale.Crop
             )
             Column(modifier = Modifier.padding(5.dp)) {
-                Text(text = product.title, maxLines = 2, overflow = TextOverflow.Ellipsis,color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = product.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Price: ${product.price}", color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        text = "Price: ${product.price}",
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     Surface(
                         color = MaterialTheme.colorScheme.error,
                         shape = RoundedCornerShape(4.dp)

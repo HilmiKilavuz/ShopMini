@@ -14,5 +14,6 @@ data class Product(
     val price: Double,
     val thumbnail: String,
     val discountPercentage : Double,
-    val category:String
+    val category:String,
+    val reviews: List<Review>?=null
 )

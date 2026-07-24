@@ -6,6 +6,7 @@
 package com.example.shopmini.data.remote
 
 import com.example.shopmini.data.model.CategoryDto
+import com.example.shopmini.data.model.Product
 import com.example.shopmini.data.model.ProductResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -42,4 +43,10 @@ interface ShopMiniApi {
         @Query("skip") skip: Int = 0
     ): ProductResponse
 
+    /**
+     * Belirli bir ürünün detaylarını getirir.
+     * İstek atılan adres: GET /products/{id}
+     */
+    @GET("products/{id}")
+    suspend fun getProductById(@Path("id") id: Int): Product
 }
