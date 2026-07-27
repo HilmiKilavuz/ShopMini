@@ -3,8 +3,8 @@ package com.example.shopmini.ui.navigation
 import kotlinx.serialization.Serializable
 
 /**
- * Navigasyon (Ekranlar Arası Geçiş) Rotalarını tutar.
- * Type-Safe Navigation özelliği sayesinde ekran isimlerini string ("home") yerine,
+ * Navigasyon  Rotalarını tutar.
+ * Type-Safe Navigation özelliği sayesinde ekran isimlerini string yerine,
  * bu şekilde güvenli sınıflar (class/object) olarak tanımlarız.
  */
 sealed class Screen {
@@ -15,5 +15,16 @@ sealed class Screen {
     // Detay sayfası rotası, zorunlu olarak bir 'productId' parametresi alır.
     @Serializable
     data class ProductDetailScreen(val productId: Int)
+
+    // Sepet sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Cart
+    // Profil sayfası rotası,şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Profile
+    // Favori sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Favourites
+
 
 }

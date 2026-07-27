@@ -3,11 +3,11 @@ package com.example.shopmini.ui.screens.detail
 import com.example.shopmini.data.model.Product
 
 /**
- * Ürün Detay sayfasının anlık durumlarını (State) temsil eder.
- * Ekran (UI) bu durumlara bakarak kendini çizer.
+ * Ürün Detay sayfasının anlık durumlarını  temsil eder.
+ * Ekran  bu durumlara bakarak kendini çizer.
  */
 sealed class ProductDetailUiState {
-    // Veri yüklenirken gösterilecek durum (Örn: Dönüşen yuvarlak ikon)
+    // Veri yüklenirken gösterilecek durum
     object Loading : ProductDetailUiState()
     
     // Veri başarıyla çekildiğinde ürün bilgilerini tutan durum

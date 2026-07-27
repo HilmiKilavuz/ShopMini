@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.shopmini.data.model.Review
 
-
+//Yorumlar için oluşturulmuş UI bileşenidir.
 @Composable
 fun ReviewCard(review: Review){
  Card(

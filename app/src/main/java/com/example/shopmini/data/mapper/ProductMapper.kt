@@ -3,6 +3,7 @@ package com.example.shopmini.data.mapper
 import com.example.shopmini.data.local.ProductEntity
 import com.example.shopmini.data.model.Product
 
+//Veri dönüştürme işlemini kısaltmak için bu fonksiyonu kullanıyoruz
 fun ProductEntity.toDomainModel(): Product{
     return Product(
     id = this.id,

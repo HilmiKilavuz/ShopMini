@@ -15,10 +15,11 @@ interface SearchHistoryDao {
     @Query("SELECT * FROM search_history ORDER BY timestamp DESC LIMIT 10")
      fun getRecentSearches(): Flow<List<SearchHistoryEntity>>
 
+     //arama geçmişini ekliyor
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSearch(entity: SearchHistoryEntity)
 
-
+    //arama geçmişini temizliyor
     @Delete
     suspend fun deleteSearch(entity: SearchHistoryEntity)
 }
