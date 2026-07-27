@@ -154,6 +154,9 @@ fun ProductDetailScreen(
                         )
                         AddFavoriteButton()
                     }
+
+
+
                 }
             }
 
