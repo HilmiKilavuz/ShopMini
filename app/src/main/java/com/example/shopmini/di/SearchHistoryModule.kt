@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+//Arama geçmişi için Repository modülü
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -57,6 +57,7 @@ import com.example.shopmini.ui.components.ProductCard
 import com.example.shopmini.ui.components.SearchBar
 import com.example.shopmini.ui.components.SearchHistoryList
 
+//Anasayfa ekranını oluşturan composable fonksiyon
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
@@ -84,6 +85,7 @@ fun HomeScreen(
                 })
             }
     ) {
+
         // Arama kutusu
         SearchBar(
             searchQuery = searchQuery,
@@ -95,6 +97,7 @@ fun HomeScreen(
             }
         )
 
+        //Filtreleme bölümü
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -119,7 +122,7 @@ fun HomeScreen(
                 )
             }
         }
-
+//Veriler alınıp alınmadığına göre yapılacak için ayrılmış bölümler
         when (uiState) {
             is HomeUiState.Loading -> {
                 Box(

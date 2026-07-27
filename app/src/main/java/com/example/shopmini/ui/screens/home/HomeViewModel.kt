@@ -181,18 +181,21 @@ class HomeViewModel @Inject constructor(
 
         }
     }
-
-    fun deleteSearchHistory(entity: SearchHistoryEntity){
+/**Arama geçmişini silen fonksiyon
+**/    fun deleteSearchHistory(entity: SearchHistoryEntity){
         viewModelScope.launch {
             searchHistoryRepository.deleteSearch(entity)
         }
     }
+
+    // Arama sorgusunu güncelleyen fonksiyon
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
         if (query.isBlank()) {
             loadProducts()
         }
     }
+    //Arama sorgusunu çalıştırmak için kullanılan fonksiyon
     fun searchProducts() {
         viewModelScope.launch {
             _searchQuery
@@ -209,7 +212,7 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
+// Arama sorgusunu kaydeden fonksiyon
     fun saveSearchQuery(query: String) {
         if (query.isNotBlank()) {
             viewModelScope.launch {

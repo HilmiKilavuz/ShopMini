@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.shopmini.ui.screens.home.HomeViewModel
 
-
+//Arama çubuğu için oluşturulmuş UI bileşenidir.
 @Composable
 fun SearchBar(searchQuery: String,
               onQueryChange: (String) -> Unit,

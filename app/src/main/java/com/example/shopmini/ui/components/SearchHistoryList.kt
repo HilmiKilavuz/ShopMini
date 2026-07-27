@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.shopmini.data.local.SearchHistoryEntity
 
-
+//Arama geçmişini göstermek için oluşturulmuş UI bileşenidir.
 @Composable
 fun SearchHistoryList(
     searchHistory: List<SearchHistoryEntity>,

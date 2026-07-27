@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.shopmini.data.model.Product
 
+
+//Her bir ürün için oluşturulmuş UI bileşenidir.
 @Composable
 fun ProductCard(
     product: Product,
