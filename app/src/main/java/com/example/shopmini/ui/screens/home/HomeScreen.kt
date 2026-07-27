@@ -5,6 +5,7 @@ package com.example.shopmini.ui.screens.home
  * Kullanıcının ürünleri gördüğü ana sayfadır.
  * Veri çekmez, sadece ViewModel'dan gelen State'i dinler ve Compose ile çizer.
  */
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -23,10 +24,12 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 
@@ -44,6 +47,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,8 +58,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shopmini.ui.components.ProductCard
+import com.example.shopmini.ui.components.ProductGridWithFab
 import com.example.shopmini.ui.components.SearchBar
 import com.example.shopmini.ui.components.SearchHistoryList
+import kotlinx.coroutines.launch
 
 //Anasayfa ekranını oluşturan composable fonksiyon
 @Composable
@@ -74,6 +80,7 @@ fun HomeScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     var isSearchFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+
 
     Column(
         modifier = Modifier
@@ -142,48 +149,18 @@ fun HomeScreen(
                         viewModel.loadCategories()
                     }) {
 
+                    ProductGridWithFab(
+                        products = products,
+                        isSearchFocused = isSearchFocused,
+                        searchQuery = searchQuery,
+                        searchHistory = searchHistory,
+                        isloadingNextPage = isloadingNextPage,
+                        onProductClick = onProductClick,
+                        onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
+                        onDeleteSearchHistory = { viewModel.deleteSearchHistory(it) },
+                        onLoadNextPage = { viewModel.loadPage() }
+                    )
 
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-
-                        // Sadece arama kutusu boşken geçmişi göster
-                        if (isSearchFocused && searchQuery.isBlank() && searchHistory.isNotEmpty()) {
-                            item(span = { GridItemSpan(maxLineSpan) }) {
-
-                                SearchHistoryList(
-                                    searchHistory,
-                                    onHistoryItemClick = {viewModel.onSearchQueryChanged(it)},
-                                    onDeleteClick = {viewModel.deleteSearchHistory(it)}
-                                )
-                            }
-                        }
-
-                        itemsIndexed(products) { index, product ->
-                            if (index == products.lastIndex) {
-                                LaunchedEffect(Unit) {
-                                    viewModel.loadPage()
-                                }
-
-                            }
-                            ProductCard(product, onProductClick)
-                        }
-                        if (isloadingNextPage) {
-                            item(span = { GridItemSpan(maxLineSpan) }) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                        }
-                    }
 
                 }
 
