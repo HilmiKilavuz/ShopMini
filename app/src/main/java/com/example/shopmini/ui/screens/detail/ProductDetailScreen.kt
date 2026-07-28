@@ -49,6 +49,7 @@ fun ProductDetailScreen(
     // ViewModel'daki anlık durumu dinliyoruz
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val isFavorite by viewModel.isFavorite.collectAsState()
     when (uiState) {
         is ProductDetailUiState.Loading -> {
             Box(
@@ -152,7 +153,7 @@ fun ProductDetailScreen(
                                 .weight(1f)
                                 .height(50.dp)
                         )
-                        AddFavoriteButton()
+                        AddFavoriteButton(isFavorite, onClick = {viewModel.toogleFavorite(product)})
                     }
 
 

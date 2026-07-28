@@ -7,6 +7,7 @@ package com.example.shopmini.di
 import android.content.Context
 import androidx.room.Room
 import com.example.shopmini.data.local.AppDatabase
+import com.example.shopmini.data.local.FavoriteDao
 import com.example.shopmini.data.local.ProductDao
 import com.example.shopmini.data.local.SearchHistoryDao
 import dagger.Module
@@ -14,7 +15,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import jakarta.inject.Singleton
+import javax.inject.Singleton
 
 
 @Module
@@ -42,15 +43,27 @@ object DatabaseModule {
     fun provideProductDao(database: AppDatabase): ProductDao {
         return database.productDao()
     }
+
     /**
      * Repository sınıflarının ihtiyaç duyduğu SearchHistoryDao nesnesini
      * AppDatabase üzerinden oluşturarak Hilt'e sunar.
      */
+
     @Provides
     @Singleton
     fun provideSearchHistoryDao(database: AppDatabase): SearchHistoryDao {
         return database.searchHistoryDao()
 
     }
+
+
+
+    /// Repository sınıflarının ihtiyaç duyduğu FavoriteDao nesnesini
+    @Provides
+    @Singleton
+    fun provideFavoriteDao(database: AppDatabase): FavoriteDao {
+        return database.favoriteDao()
+    }
+
 
 }
