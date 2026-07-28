@@ -21,8 +21,7 @@ abstract class CategoryModule {
     @Singleton
     abstract fun bindCategoryRepository(
         impl: CategoryRepositoryImpl
-    ):
-            CategoryRepository
+    ): CategoryRepository
 
 
 }

@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.shopmini.ui.components.BottomNavigationBar
 import com.example.shopmini.ui.navigation.Screen
 import com.example.shopmini.ui.screens.detail.ProductDetailScreen
+import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,12 +80,9 @@ class MainActivity : ComponentActivity() {
                         }
                         // 4. Rota: Favoriler Ekranı
                         composable<Screen.Favourites> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Favoriler Ekranı Çok Yakında!")
-                            }
+                            FavoriteScreen(onNavigateToDetail = { productId ->
+                                navController.navigate(Screen.ProductDetailScreen(productId))
+                            })
 
                         }
 

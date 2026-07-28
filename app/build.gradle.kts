@@ -50,6 +50,7 @@ android {
 dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.material3)
     //versions
     val nav_version = "2.9.8"
     val room_version = "2.8.4"

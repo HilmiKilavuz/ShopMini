@@ -26,10 +26,10 @@ sealed class BottomNavItem(
         icon = Icons.Default.ShoppingCart,
         title = "Cart"
     )
-    object Favourites: BottomNavItem(
+    object Favorites: BottomNavItem(
         route = Screen.Favourites,
         icon = Icons.Default.Favorite,
-        title = "Favourites"
+        title = "Favorites"
     )
     object Profile: BottomNavItem(
         route = Screen.Profile,
