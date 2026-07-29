@@ -6,14 +6,17 @@
 package com.example.shopmini.ui.screens.home
 
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopmini.data.local.SearchHistoryEntity
 import com.example.shopmini.data.model.CategoryDto
-import com.example.shopmini.domain.repository.CategoryRepository
-import com.example.shopmini.domain.repository.ProductRepository
-import com.example.shopmini.domain.repository.SearchHistoryRepository
+import com.example.shopmini.domain.usecase.category.GetCategoriesUseCase
+import com.example.shopmini.domain.usecase.product.GetProductByCategoryUseCase
+import com.example.shopmini.domain.usecase.product.GetProductsUseCase
+import com.example.shopmini.domain.usecase.searchHistory.DeleteSearcHistoryUseCase
+import com.example.shopmini.domain.usecase.searchHistory.GetRecentSearchesUseCase
+import com.example.shopmini.domain.usecase.searchHistory.InsertSearchUseCase
+import com.example.shopmini.domain.usecase.searchHistory.SearchProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,12 +25,18 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+//Ana ekran için oluşturulmuş ViewModel
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val productrepository: ProductRepository,
-    private val categoryRepository: CategoryRepository,
-    private val searchHistoryRepository: SearchHistoryRepository
+
+
+    private val getProductsUseCase: GetProductsUseCase,
+    private val getProductsByCategoryUseCase: GetProductByCategoryUseCase,
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
+    private val deleteSearchesUseCase: DeleteSearcHistoryUseCase,
+    private val searchProductsUseCase: SearchProductsUseCase,
+    private val insertSearchUseCase: InsertSearchUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -45,7 +54,7 @@ class HomeViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow<String>("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-     val searchHistory = searchHistoryRepository.getRecentSearches()
+    val searchHistory = getRecentSearchesUseCase()
 
     private var currentSkip = 0
     private val limit = 20
@@ -55,7 +64,6 @@ class HomeViewModel @Inject constructor(
         loadProducts()
         loadCategories()
         searchProducts()
-
 
 
     }
@@ -71,7 +79,7 @@ class HomeViewModel @Inject constructor(
             _isRefreshing.value = true
             try {
 
-                val products = productrepository.getProducts()
+                val products = getProductsUseCase()
                 currentSkip = products.size
                 _uiState.value = HomeUiState.Success(products)
             } catch (e: Exception) {
@@ -97,9 +105,10 @@ class HomeViewModel @Inject constructor(
 
             try {
 
-                _categories.value = categoryRepository.getCategories()
+                _categories.value = getCategoriesUseCase()
 
             } catch (e: Exception) {
+                _uiState.value = HomeUiState.Error("Categories cannot be loaded")
 
             }
         }
@@ -116,17 +125,17 @@ class HomeViewModel @Inject constructor(
             try {
                 currentSkip = 0
                 val products = if (slug == null) {
-                    productrepository.getProducts()
+                    getProductsUseCase()
 
                 } else {
-                    productrepository.getProductsByCategory(slug)
+                    getProductsByCategoryUseCase(slug)
 
                 }
                 currentSkip = products.size
                 _uiState.value = HomeUiState.Success(products)
 
             } catch (e: Exception) {
-                _uiState.value = HomeUiState.Error(e.message ?: "Hata")
+                _uiState.value = HomeUiState.Error(e.message ?: "Category error")
 
 
             } finally {
@@ -153,10 +162,11 @@ class HomeViewModel @Inject constructor(
             try {
 
                 val newProducts = if (selectedCategory.value == null) {
-                    productrepository.getProducts(skip = currentSkip, limit = limit)
+                    getProductsUseCase(skip = currentSkip, limit = limit)
 
                 } else {
-                    productrepository.getProductsByCategory(
+
+                    getProductsByCategoryUseCase(
                         _selectedCategory.value!!,
                         skip = currentSkip,
                         limit = limit
@@ -171,7 +181,7 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 //// hata yazısı yerine hata mesajı gösterilebilir uygulama çökmesin
 
-                _uiState.value = HomeUiState.Error(e.message ?: "Hata")
+                _uiState.value = HomeUiState.Error(e.message ?: "Page load error")
 
 
             } finally {
@@ -181,10 +191,12 @@ class HomeViewModel @Inject constructor(
 
         }
     }
-/**Arama geçmişini silen fonksiyon
-**/    fun deleteSearchHistory(entity: SearchHistoryEntity){
+
+    /**Arama geçmişini silen fonksiyon
+     **/
+    fun deleteSearchHistory(entity: SearchHistoryEntity) {
         viewModelScope.launch {
-            searchHistoryRepository.deleteSearch(entity)
+            deleteSearchesUseCase(entity)
         }
     }
 
@@ -195,6 +207,7 @@ class HomeViewModel @Inject constructor(
             loadProducts()
         }
     }
+
     //Arama sorgusunu çalıştırmak için kullanılan fonksiyon
     fun searchProducts() {
         viewModelScope.launch {
@@ -203,27 +216,30 @@ class HomeViewModel @Inject constructor(
                 .filter { it.isNotBlank() }
                 .collect { query ->
                     try {
-                        val products = searchHistoryRepository.searchProducts(query)
+                        val products = searchProductsUseCase(query)
                         _uiState.value = HomeUiState.Success(products)
 
                     } catch (e: Exception) {
-                        _uiState.value = HomeUiState.Error(e.message ?: "Arama hatası")
+                        _uiState.value = HomeUiState.Error(e.message ?: "Search Error")
                     }
                 }
         }
     }
-// Arama sorgusunu kaydeden fonksiyon
+
+    // Arama sorgusunu kaydeden fonksiyon
     fun saveSearchQuery(query: String) {
         if (query.isNotBlank()) {
             viewModelScope.launch {
-                searchHistoryRepository.insertSearch(
-                    SearchHistoryEntity(id = 0, query = query, timestamp = System.currentTimeMillis())
+                insertSearchUseCase(
+                    SearchHistoryEntity(
+                        id = 0,
+                        query = query,
+                        timestamp = System.currentTimeMillis()
+                    )
                 )
             }
         }
     }
-
-
 
 
 }

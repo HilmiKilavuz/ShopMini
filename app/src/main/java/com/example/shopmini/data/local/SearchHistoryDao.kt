@@ -8,7 +8,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 
-
+//arama geçmişi tablosu için işlemler
 @Dao
 interface SearchHistoryDao {
 //son 10 aramayı döndürüyor

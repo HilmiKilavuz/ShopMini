@@ -5,7 +5,7 @@ import com.example.shopmini.data.local.FavoriteEntity
 import com.example.shopmini.domain.repository.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-
+//Favoriler için repository sınıfı
 class FavoriteRepositoryImpl @Inject constructor(
     private val favoriteDao: FavoriteDao
 ) : FavoriteRepository {

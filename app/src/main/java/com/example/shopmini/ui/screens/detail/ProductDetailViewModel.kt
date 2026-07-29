@@ -3,10 +3,10 @@ package com.example.shopmini.ui.screens.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shopmini.data.local.FavoriteEntity
 import com.example.shopmini.data.model.Product
-import com.example.shopmini.domain.repository.FavoriteRepository
-import com.example.shopmini.domain.repository.ProductRepository
+import com.example.shopmini.domain.usecase.favorite.CheckIfFavoriteUseCase
+import com.example.shopmini.domain.usecase.favorite.ToggleFavoriteUseCase
+import com.example.shopmini.domain.usecase.product.GetProductDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,21 +22,25 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
-    private val productRepository: ProductRepository,
-    // Navigasyon sırasında gönderilen parametreleri havada yakalamamızı sağlar
-    savedStateHandle: SavedStateHandle,
-    private val favoriteRepository: FavoriteRepository
+
+    //Use Caseler ekleyerek tek bir işlevi yerine getiren kodlar yazıyoruz
+    // ve işlemlerini viewmodelden ayrıştırıyoruz.
+    private val getProductDetailUseCase: GetProductDetailUseCase,
+    private val checkIfFavoriteUseCase: CheckIfFavoriteUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     // Ekranın dinleyeceği değişken durum
-    private val _uiState= MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
+    private val _uiState = MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     // Ürün favorilere eklenmiş mi kontrolü
     val isFavorite: StateFlow<Boolean> = savedStateHandle.get<Int>("productId")?.let { id ->
-        favoriteRepository.isFavorite(id).stateIn(
+        checkIfFavoriteUseCase(id).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
@@ -49,23 +53,23 @@ class ProductDetailViewModel @Inject constructor(
         val productId = savedStateHandle.get<Int>("productId")
         if (productId != null) {
             loadProductDetail(productId)
-        }else{
-            _uiState.value=ProductDetailUiState.Error("Product Not Found")
+        } else {
+            _uiState.value = ProductDetailUiState.Error("Product Not Found")
         }
 
     }
 
     // Veriyi yüklemek için kullanılan fonksiyon
-    fun loadProductDetail(id :Int){
-        viewModelScope.launch{
+    fun loadProductDetail(id: Int) {
+        viewModelScope.launch {
             _uiState.value = ProductDetailUiState.Loading
             _isRefreshing.value = true
             try {
-                val product = productRepository.getProductById(id)
-                _uiState.value= ProductDetailUiState.Success(product)
-            }catch (e: Exception){
+                val product = getProductDetailUseCase(id)
+                _uiState.value = ProductDetailUiState.Success(product)
+            } catch (e: Exception) {
                 _uiState.value = ProductDetailUiState.Error(e.message ?: "Unknown error")
-            }finally {
+            } finally {
                 _isRefreshing.value = false
             }
 
@@ -73,24 +77,12 @@ class ProductDetailViewModel @Inject constructor(
 
 
     }
-
-    fun toogleFavorite(product: Product){
-        val favorite = FavoriteEntity(
-            id = product.id,
-            title = product.title,
-            price = product.price,
-            thumbnail = product.thumbnail,
-            discountPercentage = product.discountPercentage
-        )
+// Ürünü favorilere eklemek için kullanılan fonksiyon
+    fun toggleFavorite(product: Product) {
         viewModelScope.launch {
-           if(isFavorite.value){
-               favoriteRepository.deleteFavorite(favorite)
-
-           }else{
-               favoriteRepository.insertFavorite(favorite)
-           }
-
+            toggleFavoriteUseCase(product, isFavorite.value)
         }
+
 
     }
 }

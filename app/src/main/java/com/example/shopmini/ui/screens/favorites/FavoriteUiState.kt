@@ -1,7 +1,7 @@
 package com.example.shopmini.ui.screens.favorites
 
 import com.example.shopmini.data.local.FavoriteEntity
-
+//Favoriler için oluşturulmuş UIState bileşenidir.
 sealed class FavoriteUiState {
 
     object Loading : FavoriteUiState()

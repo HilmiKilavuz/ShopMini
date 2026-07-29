@@ -6,7 +6,7 @@ package com.example.shopmini.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+//Product tablosu
 
 @Entity(tableName = "products")
 data class ProductEntity(

@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-
+//Favori tablo işlemleri
 @Dao
 interface FavoriteDao {
     //Favorileri getirir
