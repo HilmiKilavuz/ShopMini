@@ -6,7 +6,7 @@ package com.example.shopmini.data.model
 
 import kotlinx.serialization.Serializable
 
-
+//Kategori verisini karşılayan veri sınıfı
 @Serializable
 data class CategoryDto(
     val slug: String,

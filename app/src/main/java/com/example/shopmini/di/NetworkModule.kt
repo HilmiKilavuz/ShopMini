@@ -14,7 +14,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
-
+//Network için NetworkModule sınıfı
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

@@ -6,11 +6,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shopmini.ui.navigation.BottomNavItem
-import com.example.shopmini.ui.navigation.Screen
 
 //Anasayfa altındaki butonlar
 @Composable

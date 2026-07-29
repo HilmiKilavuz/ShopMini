@@ -2,7 +2,7 @@ package com.example.shopmini.data.model
 
 import kotlinx.serialization.Serializable
 
-//Yorumların tutulduğu sınıf
+//Yorumları karşılayan veri sınıfı
 @Serializable
 data class Review (
     val rating: Int,

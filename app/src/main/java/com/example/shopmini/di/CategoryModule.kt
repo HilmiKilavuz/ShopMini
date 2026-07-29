@@ -12,7 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
+//Kategori için CategoryModule sınıfı
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class CategoryModule {

@@ -3,7 +3,7 @@ package com.example.shopmini.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-//arama geçmişini tutuyoruz
+//arama geçmişi tablosu için veri sınıfı
 @Entity(tableName = "search_history")
 data class SearchHistoryEntity(
     @PrimaryKey(autoGenerate = true )val id :Int,

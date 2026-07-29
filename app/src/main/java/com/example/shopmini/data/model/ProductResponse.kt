@@ -5,7 +5,7 @@
 package com.example.shopmini.data.model
 
 import kotlinx.serialization.Serializable
-
+//ProductResponse verisini karşılayan veri sınıfı
 @Serializable
 data class ProductResponse(
     val products: List<Product>

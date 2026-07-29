@@ -2,7 +2,7 @@ package com.example.shopmini.domain.repository
 
 import com.example.shopmini.data.local.FavoriteEntity
 import kotlinx.coroutines.flow.Flow
-
+//Favoriler için kurallar katmanı
 interface FavoriteRepository {
     fun getFavorites(): Flow<List<FavoriteEntity>>
     suspend fun insertFavorite(favorite: FavoriteEntity)

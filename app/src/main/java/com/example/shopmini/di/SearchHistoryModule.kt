@@ -1,15 +1,11 @@
 package com.example.shopmini.di
 
-import com.example.shopmini.data.local.AppDatabase
-import com.example.shopmini.data.local.SearchHistoryDao
 import com.example.shopmini.data.repository.SearchHistoryRepositoryImpl
 import com.example.shopmini.domain.repository.SearchHistoryRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-
 import javax.inject.Singleton
 
 //Arama geçmişi için Repository modülü

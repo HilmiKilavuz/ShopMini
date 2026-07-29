@@ -6,16 +6,13 @@
 package com.example.shopmini.data.repository
 
 import com.example.shopmini.data.local.ProductDao
-import com.example.shopmini.data.local.ProductEntity
 import com.example.shopmini.data.mapper.toDomainModel
 import com.example.shopmini.data.mapper.toEntity
-import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.data.model.Product
 import com.example.shopmini.data.remote.ShopMiniApi
 import com.example.shopmini.domain.repository.ProductRepository
 import javax.inject.Inject
-import kotlin.String
-
+//Ürünleri almak için repository sınıfı
 class ProductRepositoryImpl @Inject constructor(
     private val api: ShopMiniApi,
     private val dao: ProductDao

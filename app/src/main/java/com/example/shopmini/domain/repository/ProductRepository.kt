@@ -4,9 +4,8 @@
  */
 package com.example.shopmini.domain.repository
 
-import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.data.model.Product
-
+//Ürün işlemleri için oluşturulmuş Kurallar katmanı
 interface ProductRepository {
     /**
      * Tüm ürünleri sayfalı olarak getirir.
@@ -20,7 +19,7 @@ interface ProductRepository {
     /**
      * Belirli bir kategoriye ait ürünleri getirir.
      *
-     * @param slug Kategorinin benzersiz adı
+     * @param slug Kategorinin benzersiz adı}
      * @param limit Bir sayfada gösterilecek maksimum ürün sayısı
      * @param skip Kaç ürünün atlanacağı
      * @return İlgili kategoriye ait ürün listesi

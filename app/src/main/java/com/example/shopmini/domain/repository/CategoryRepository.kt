@@ -5,7 +5,7 @@
 package com.example.shopmini.domain.repository
 
 import com.example.shopmini.data.model.CategoryDto
-
+//Kategori işlemleri için oluşturulmuş Kurallar katmanı
 interface CategoryRepository {
     /**
      * Tüm ürün kategorilerini getirir.
