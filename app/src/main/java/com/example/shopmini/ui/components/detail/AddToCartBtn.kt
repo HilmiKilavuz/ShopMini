@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.detail
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -8,9 +8,10 @@ import androidx.compose.ui.Modifier
 
 //Sepete ekleme butonu
 @Composable
-fun AddToCartBtn(modifier: Modifier) {
+fun AddToCartBtn(modifier: Modifier,
+                 addCart: () -> Unit) {
     Button(
-        onClick = { /* Şimdilik boş */ },
+        onClick =  addCart ,
         modifier = modifier
     ) {
         Text("Sepete Ekle")

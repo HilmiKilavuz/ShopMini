@@ -7,9 +7,10 @@ package com.example.shopmini.di
 import android.content.Context
 import androidx.room.Room
 import com.example.shopmini.data.local.AppDatabase
-import com.example.shopmini.data.local.FavoriteDao
-import com.example.shopmini.data.local.ProductDao
-import com.example.shopmini.data.local.SearchHistoryDao
+import com.example.shopmini.data.local.dao.CartDao
+import com.example.shopmini.data.local.dao.FavoriteDao
+import com.example.shopmini.data.local.dao.ProductDao
+import com.example.shopmini.data.local.dao.SearchHistoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,6 +64,12 @@ object DatabaseModule {
     @Singleton
     fun provideFavoriteDao(database: AppDatabase): FavoriteDao {
         return database.favoriteDao()
+    }
+    /// Repository sınıflarının ihtiyaç duyduğu CartDao nesnesini
+    @Provides
+    @Singleton
+    fun provideCartDao(database: AppDatabase): CartDao {
+        return database.cartDao()
     }
 
 

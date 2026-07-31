@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.detail
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite

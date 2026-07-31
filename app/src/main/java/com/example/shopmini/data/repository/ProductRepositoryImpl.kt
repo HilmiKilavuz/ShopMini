@@ -5,7 +5,7 @@
  */
 package com.example.shopmini.data.repository
 
-import com.example.shopmini.data.local.ProductDao
+import com.example.shopmini.data.local.dao.ProductDao
 import com.example.shopmini.data.mapper.toDomainModel
 import com.example.shopmini.data.mapper.toEntity
 import com.example.shopmini.data.model.Product
@@ -80,7 +80,8 @@ class ProductRepositoryImpl @Inject constructor(
                     thumbnail = localProduct.thumbnail,
                     discountPercentage = localProduct.discountPercentage,
                     category = localProduct.category,
-                    reviews = null
+                    reviews = null,
+                    stock = localProduct.stock
                 )
             } else {
 

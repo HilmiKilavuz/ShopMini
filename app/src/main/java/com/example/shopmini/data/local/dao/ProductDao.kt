@@ -1,15 +1,15 @@
-/**
- * DATA Katmanı.
- * Room veritabanına sorgu (SQL) attığımız DAO  arayüzüdür.
- */
-package com.example.shopmini.data.local
+package com.example.shopmini.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-//Product tablosu için işlemler
+import com.example.shopmini.data.local.entity.ProductEntity
 
+/**
+ * DATA Katmanı.
+ * Room veritabanına sorgu (SQL) attığımız DAO  arayüzüdür.
+ */
 @Dao
 interface ProductDao {
     /**

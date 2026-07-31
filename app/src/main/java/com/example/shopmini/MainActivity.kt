@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shopmini.ui.components.BottomNavigationBar
 import com.example.shopmini.ui.navigation.Screen
+import com.example.shopmini.ui.screens.cart.CartScreen
 import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
@@ -68,15 +69,10 @@ class MainActivity : ComponentActivity() {
                         }
                         // 3. Rota: Sepet Ekranı
                         composable<Screen.Cart> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Sepet Ekranı Çok Yakında!")
-
-                            }
-
-
+                            CartScreen(onBackClick = {
+                                // Geri butonuna basıldığında bir önceki sayfaya döner
+                                navController.popBackStack()
+                            })
                         }
                         // 4. Rota: Favoriler Ekranı
                         composable<Screen.Favourites> {

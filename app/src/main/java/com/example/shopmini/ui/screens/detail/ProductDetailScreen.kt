@@ -26,9 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.shopmini.ui.components.AddFavoriteButton
-import com.example.shopmini.ui.components.AddToCartBtn
-import com.example.shopmini.ui.components.ReviewCard
+import com.example.shopmini.ui.components.detail.AddFavoriteButton
+import com.example.shopmini.ui.components.detail.AddToCartBtn
+import com.example.shopmini.ui.components.detail.CartQuantityControl
+import com.example.shopmini.ui.components.detail.ReviewCard
 
 /**
  * UI Katmanı.
@@ -142,12 +143,26 @@ fun ProductDetailScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        AddToCartBtn(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .height(50.dp)
-                        )
+                        val cartItem by viewModel.cartItem.collectAsState()
+
+
+                        if (cartItem == null) {
+                            // Sepette YOK → "Sepete Ekle" butonu göster
+                            AddToCartBtn(
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                addCart = { viewModel.insertCart(product) }
+                            )
+                        } else {
+                            // Sepette VAR → adet kontrol paneli göster
+                            CartQuantityControl(
+                                quantity = cartItem!!.quantity,
+                                onIncrease = { viewModel.increaseQuantity(cartItem!!) },
+                                onDecrease = { viewModel.decreaseQuantity(cartItem!!) },
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                stock = product.stock
+                            )
+                        }
+
                         AddFavoriteButton(isFavorite, onClick = {viewModel.toggleFavorite(product)})
                     }
 

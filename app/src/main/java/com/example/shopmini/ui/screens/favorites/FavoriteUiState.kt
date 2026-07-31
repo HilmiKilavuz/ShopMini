@@ -1,6 +1,6 @@
 package com.example.shopmini.ui.screens.favorites
 
-import com.example.shopmini.data.local.FavoriteEntity
+import com.example.shopmini.data.local.entity.FavoriteEntity
 //Favoriler için oluşturulmuş UIState bileşenidir.
 sealed class FavoriteUiState {
 

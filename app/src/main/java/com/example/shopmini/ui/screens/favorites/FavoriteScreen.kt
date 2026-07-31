@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.shopmini.ui.components.FavoriteCard
+import com.example.shopmini.ui.components.favorite.FavoriteCard
 //Favoriler için oluşturulmuş UI bileşenidir.
 @Composable
 fun FavoriteScreen(

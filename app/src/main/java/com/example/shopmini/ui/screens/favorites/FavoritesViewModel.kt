@@ -2,7 +2,7 @@ package com.example.shopmini.ui.screens.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shopmini.data.local.FavoriteEntity
+import com.example.shopmini.data.local.entity.FavoriteEntity
 import com.example.shopmini.domain.usecase.favorite.DeleteFavoriteUseCase
 import com.example.shopmini.domain.usecase.favorite.GetFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

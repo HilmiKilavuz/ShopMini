@@ -1,7 +1,7 @@
 package com.example.shopmini.data.repository
 
-import com.example.shopmini.data.local.FavoriteDao
-import com.example.shopmini.data.local.FavoriteEntity
+import com.example.shopmini.data.local.dao.FavoriteDao
+import com.example.shopmini.data.local.entity.FavoriteEntity
 import com.example.shopmini.domain.repository.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

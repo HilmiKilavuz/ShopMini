@@ -3,7 +3,12 @@ package com.example.shopmini.ui.screens.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shopmini.data.local.entity.CartEntity
 import com.example.shopmini.data.model.Product
+import com.example.shopmini.domain.usecase.cart.DeleteItemUseCase
+import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
+import com.example.shopmini.domain.usecase.cart.InsertItemUseCase
+import com.example.shopmini.domain.usecase.cart.UpdateCartQuantityUseCase
 import com.example.shopmini.domain.usecase.favorite.CheckIfFavoriteUseCase
 import com.example.shopmini.domain.usecase.favorite.ToggleFavoriteUseCase
 import com.example.shopmini.domain.usecase.product.GetProductDetailUseCase
@@ -12,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +34,10 @@ class ProductDetailViewModel @Inject constructor(
     private val getProductDetailUseCase: GetProductDetailUseCase,
     private val checkIfFavoriteUseCase: CheckIfFavoriteUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val insertItemUseCase: InsertItemUseCase,
+    private val getCartItemsUseCase: GetCartItemsUseCase,
+    private val updateCartQuantityUseCase: UpdateCartQuantityUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase,
 
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -46,6 +56,16 @@ class ProductDetailViewModel @Inject constructor(
             initialValue = false
         )
     } ?: MutableStateFlow(false)
+// Bu ürünün sepetteki mevcut CartEntity'sini tutar. null ise sepette yok.
+    val cartItem: StateFlow<CartEntity?> = savedStateHandle.get<Int>("productId")?.let { id ->
+        getCartItemsUseCase()
+            .map { items -> items.find { it.id == id } }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = null
+            )
+    } ?: MutableStateFlow(null)
 
 
     init {
@@ -58,6 +78,7 @@ class ProductDetailViewModel @Inject constructor(
         }
 
     }
+
 
     // Veriyi yüklemek için kullanılan fonksiyon
     fun loadProductDetail(id: Int) {
@@ -85,4 +106,24 @@ class ProductDetailViewModel @Inject constructor(
 
 
     }
+    fun insertCart(product: Product) {
+        viewModelScope.launch {
+            insertItemUseCase(product)
+        }
+
+
+    }
+    fun increaseQuantity(item: CartEntity) {
+        viewModelScope.launch {
+            updateCartQuantityUseCase(item.id, item.quantity + 1)
+        }
+    }
+
+    fun decreaseQuantity(item: CartEntity) {
+        viewModelScope.launch {
+            if (item.quantity == 1) deleteItemUseCase(item)
+            else updateCartQuantityUseCase(item.id, item.quantity - 1)
+        }
+    }
+
 }

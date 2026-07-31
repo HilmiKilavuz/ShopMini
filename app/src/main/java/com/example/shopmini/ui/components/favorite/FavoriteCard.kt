@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.favorite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.shopmini.data.local.FavoriteEntity
+import com.example.shopmini.data.local.entity.FavoriteEntity
 
 //Favorilerde bulunan ürünlerin kartları
 @Composable

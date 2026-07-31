@@ -2,7 +2,7 @@
  * UI Katmanı.
  * Liste içindeki tek bir ürünün nasıl görüneceğini tasarlayan Compose bileşenidir.
  */
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.home
 
 
 import androidx.compose.foundation.clickable
