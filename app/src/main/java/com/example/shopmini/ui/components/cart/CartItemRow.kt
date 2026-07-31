@@ -73,7 +73,7 @@ fun CartItemRow(
                 if (item.discountPercentage > 0) {
                     Text(
                         text = "%${item.discountPercentage.toInt()} indirim",
-                        color = Color(0xFFFF6B35), // turuncu
+                        color = Color(0xFFFF6B35),
                         fontSize = 12.sp
                     )
                 }
@@ -90,7 +90,7 @@ fun CartItemRow(
                     val discountedPrice = item.price * (1 - item.discountPercentage / 100)
                     Text(
                         text = "${"%.2f".format(discountedPrice)} ₺",
-                        color = Color(0xFF4CAF50), // yeşil
+                        color = Color(0xFF4CAF50),
                         fontWeight = FontWeight.Bold
                     )
                 }

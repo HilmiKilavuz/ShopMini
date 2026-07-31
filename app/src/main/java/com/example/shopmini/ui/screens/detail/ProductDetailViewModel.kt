@@ -106,6 +106,8 @@ class ProductDetailViewModel @Inject constructor(
 
 
     }
+
+    // Ürünü sepete eklemek için kullanılan fonksiyon
     fun insertCart(product: Product) {
         viewModelScope.launch {
             insertItemUseCase(product)
@@ -113,12 +115,14 @@ class ProductDetailViewModel @Inject constructor(
 
 
     }
+    // Adet arttırma işlemi için kullanılan fonksiyon
     fun increaseQuantity(item: CartEntity) {
         viewModelScope.launch {
             updateCartQuantityUseCase(item.id, item.quantity + 1)
         }
     }
 
+    // Adet azaltma işlemi için kullanılan fonksiyon
     fun decreaseQuantity(item: CartEntity) {
         viewModelScope.launch {
             if (item.quantity == 1) deleteItemUseCase(item)

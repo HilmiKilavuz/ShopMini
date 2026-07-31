@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+//Sepet sisteminin viewmodel'i
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase,
@@ -27,7 +27,7 @@ class CartViewModel @Inject constructor(
         getCart()
     }
 
-
+//Sepetteki ürünleri getirme işlemi
     private fun getCart() {
 
         viewModelScope.launch {
@@ -56,7 +56,7 @@ class CartViewModel @Inject constructor(
 
         }
     }
-
+//Toplam hesaplama işlemi
     private fun calculateTotal(items: List<CartEntity>) {
         // Her ürünün fiyatı
         val subtotal = items.sumOf { it.price * it.quantity }
@@ -73,8 +73,7 @@ class CartViewModel @Inject constructor(
             grandTotal = grandTotal
         )
     }
-
-
+    // Adet arttırma işlemi
     fun increaseQuantity(item: CartEntity) {
         viewModelScope.launch {
             updateCartQuantityUseCase(item.id, item.quantity + 1)
@@ -82,7 +81,7 @@ class CartViewModel @Inject constructor(
         }
 
     }
-
+//Adet azaltma işlemi
     fun decreaseQuantity(item: CartEntity) {
         viewModelScope.launch {
             if (item.quantity == 1) {
@@ -94,7 +93,7 @@ class CartViewModel @Inject constructor(
 
         }
     }
-
+//Sepetten silme işlemi
     fun deleteCartItem(item: CartEntity) {
         viewModelScope.launch {
             deleteCartItemUseCase(item)
