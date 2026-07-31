@@ -1,4 +1,4 @@
-package com.example.shopmini.data.local
+package com.example.shopmini.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -23,7 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.shopmini.data.local.SearchHistoryEntity
+import com.example.shopmini.data.local.entity.SearchHistoryEntity
 import com.example.shopmini.data.model.Product
 import kotlinx.coroutines.launch
 //Ürünlerin bulunduğu ızgaralı yapıya göre listeler

@@ -1,6 +1,6 @@
 package com.example.shopmini.domain.usecase.searchHistory
 
-import com.example.shopmini.data.local.SearchHistoryEntity
+import com.example.shopmini.data.local.entity.SearchHistoryEntity
 import com.example.shopmini.domain.repository.SearchHistoryRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

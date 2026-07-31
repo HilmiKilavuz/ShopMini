@@ -1,7 +1,7 @@
 package com.example.shopmini.data.repository
 
-import com.example.shopmini.data.local.SearchHistoryDao
-import com.example.shopmini.data.local.SearchHistoryEntity
+import com.example.shopmini.data.local.dao.SearchHistoryDao
+import com.example.shopmini.data.local.entity.SearchHistoryEntity
 import com.example.shopmini.data.model.Product
 import com.example.shopmini.data.remote.ShopMiniApi
 import com.example.shopmini.domain.repository.SearchHistoryRepository

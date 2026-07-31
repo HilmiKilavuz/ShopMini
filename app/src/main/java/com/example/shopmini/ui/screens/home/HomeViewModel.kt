@@ -8,7 +8,7 @@ package com.example.shopmini.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shopmini.data.local.SearchHistoryEntity
+import com.example.shopmini.data.local.entity.SearchHistoryEntity
 import com.example.shopmini.data.model.CategoryDto
 import com.example.shopmini.domain.usecase.category.GetCategoriesUseCase
 import com.example.shopmini.domain.usecase.product.GetProductByCategoryUseCase

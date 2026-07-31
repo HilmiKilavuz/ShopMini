@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.shopmini.ui.components.AddFavoriteButton
 import com.example.shopmini.ui.components.AddToCartBtn
+import com.example.shopmini.ui.components.CartQuantityControl
 import com.example.shopmini.ui.components.ReviewCard
 
 /**
@@ -142,12 +143,25 @@ fun ProductDetailScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        AddToCartBtn(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .height(50.dp)
-                        )
+                        val cartItem by viewModel.cartItem.collectAsState()
+
+
+                        if (cartItem == null) {
+                            // Sepette YOK → "Sepete Ekle" butonu göster
+                            AddToCartBtn(
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                addCart = { viewModel.insertCart(product) }
+                            )
+                        } else {
+                            // Sepette VAR → adet kontrol paneli göster
+                            CartQuantityControl(
+                                quantity = cartItem!!.quantity,
+                                onIncrease = { viewModel.increaseQuantity(cartItem!!) },
+                                onDecrease = { viewModel.decreaseQuantity(cartItem!!) },
+                                modifier = Modifier.weight(1f).height(50.dp)
+                            )
+                        }
+
                         AddFavoriteButton(isFavorite, onClick = {viewModel.toggleFavorite(product)})
                     }
 

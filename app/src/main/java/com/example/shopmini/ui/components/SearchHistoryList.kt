@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.shopmini.data.local.SearchHistoryEntity
+import com.example.shopmini.data.local.entity.SearchHistoryEntity
 
 //Arama geçmişini göstermek için oluşturulmuş UI bileşenidir.
 @Composable

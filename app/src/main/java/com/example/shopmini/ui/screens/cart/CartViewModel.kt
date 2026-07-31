@@ -1,0 +1,106 @@
+package com.example.shopmini.ui.screens.cart
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.shopmini.data.local.entity.CartEntity
+import com.example.shopmini.domain.usecase.cart.DeleteItemUseCase
+import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
+import com.example.shopmini.domain.usecase.cart.UpdateCartQuantityUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+
+@HiltViewModel
+class CartViewModel @Inject constructor(
+    private val getCartItemsUseCase: GetCartItemsUseCase,
+    private val deleteCartItemUseCase: DeleteItemUseCase,
+    private val updateCartQuantityUseCase: UpdateCartQuantityUseCase
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(CartUiState())
+    val uiState: StateFlow<CartUiState> = _uiState.asStateFlow()
+
+    init {
+        getCart()
+    }
+
+
+    private fun getCart() {
+
+        viewModelScope.launch {
+
+            try {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = true
+                )
+                getCartItemsUseCase().collect { items ->
+                    _uiState.value = _uiState.value.copy(
+                        cartItems = items,
+                        isLoading = false
+                    )
+                    calculateTotal(items)
+
+                }
+
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message.toString()
+                )
+
+            }
+
+
+        }
+    }
+
+    private fun calculateTotal(items: List<CartEntity>) {
+        // Her ürünün fiyatı
+        val subtotal = items.sumOf { it.price * it.quantity }
+
+        // Her ürünün indirimli tutarı
+        val discountTotal = items.sumOf { it.price * it.quantity * (it.discountPercentage / 100) }
+
+        // Ödenecek tutar
+        val grandTotal = subtotal - discountTotal
+
+        _uiState.value = _uiState.value.copy(
+            subtotal = subtotal,
+            discountTotal = discountTotal,
+            grandTotal = grandTotal
+        )
+    }
+
+
+    fun increaseQuantity(item: CartEntity) {
+        viewModelScope.launch {
+            updateCartQuantityUseCase(item.id, item.quantity + 1)
+
+        }
+
+    }
+
+    fun decreaseQuantity(item: CartEntity) {
+        viewModelScope.launch {
+            if (item.quantity == 1) {
+                deleteCartItemUseCase(item)
+            } else {
+                updateCartQuantityUseCase(item.id, item.quantity - 1)
+
+            }
+
+        }
+    }
+
+    fun deleteCartItem(item: CartEntity) {
+        viewModelScope.launch {
+            deleteCartItemUseCase(item)
+        }
+
+    }
+
+
+}

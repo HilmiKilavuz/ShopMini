@@ -1,13 +1,12 @@
+package com.example.shopmini.data.local.entity
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 /**
  * DATA Katmanı.
  * Room veritabanında saklanacak Tablonun şeklini belirler.
  */
-package com.example.shopmini.data.local
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-//Product tablosu
-
 @Entity(tableName = "products")
 data class ProductEntity(
     @PrimaryKey val id: Int,

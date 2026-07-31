@@ -5,7 +5,7 @@
  */
 package com.example.shopmini.data.repository
 
-import com.example.shopmini.data.local.ProductDao
+import com.example.shopmini.data.local.dao.ProductDao
 import com.example.shopmini.data.mapper.toDomainModel
 import com.example.shopmini.data.mapper.toEntity
 import com.example.shopmini.data.model.Product

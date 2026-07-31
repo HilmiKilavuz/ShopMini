@@ -1,6 +1,6 @@
 package com.example.shopmini.data.mapper
 
-import com.example.shopmini.data.local.ProductEntity
+import com.example.shopmini.data.local.entity.ProductEntity
 import com.example.shopmini.data.model.Product
 
 //Veri dönüştürme işlemini kısaltmak için bu fonksiyonu kullanıyoruz

@@ -1,6 +1,6 @@
 package com.example.shopmini.domain.usecase.favorite
 
-import com.example.shopmini.data.local.FavoriteEntity
+import com.example.shopmini.data.local.entity.FavoriteEntity
 import com.example.shopmini.domain.repository.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
