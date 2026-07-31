@@ -21,6 +21,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shopmini.ui.components.cart.CartItemRow
 import com.example.shopmini.ui.components.cart.CartSummaryBar
 
+//Sepet ekranı
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(

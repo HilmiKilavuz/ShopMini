@@ -4,7 +4,7 @@ import com.example.shopmini.data.local.entity.CartEntity
 import com.example.shopmini.data.model.Product
 import com.example.shopmini.domain.repository.CartRepository
 import javax.inject.Inject
-
+//Sepetteki ürünleri ekler
  class InsertItemUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
