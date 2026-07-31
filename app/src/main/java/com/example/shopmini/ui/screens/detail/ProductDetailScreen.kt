@@ -26,10 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.shopmini.ui.components.AddFavoriteButton
-import com.example.shopmini.ui.components.AddToCartBtn
-import com.example.shopmini.ui.components.CartQuantityControl
-import com.example.shopmini.ui.components.ReviewCard
+import com.example.shopmini.ui.components.detail.AddFavoriteButton
+import com.example.shopmini.ui.components.detail.AddToCartBtn
+import com.example.shopmini.ui.components.detail.CartQuantityControl
+import com.example.shopmini.ui.components.detail.ReviewCard
 
 /**
  * UI Katmanı.
@@ -158,7 +158,8 @@ fun ProductDetailScreen(
                                 quantity = cartItem!!.quantity,
                                 onIncrease = { viewModel.increaseQuantity(cartItem!!) },
                                 onDecrease = { viewModel.decreaseQuantity(cartItem!!) },
-                                modifier = Modifier.weight(1f).height(50.dp)
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                stock = product.stock
                             )
                         }
 

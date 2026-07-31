@@ -34,8 +34,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.shopmini.ui.components.ProductGridWithFab
-import com.example.shopmini.ui.components.SearchBar
+import com.example.shopmini.ui.components.home.ProductGridWithFab
+import com.example.shopmini.ui.components.home.SearchBar
 
 //Anasayfa ekranını oluşturan composable fonksiyon
 @Composable

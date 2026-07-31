@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.cart
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

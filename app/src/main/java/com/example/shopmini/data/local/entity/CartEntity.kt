@@ -10,5 +10,6 @@ data class CartEntity (
     val price: Double,
     val quantity: Int,
     val thumbnail: String,
-    val discountPercentage: Double
+    val discountPercentage: Double,
+    val stock: Int
 )

@@ -13,7 +13,8 @@ fun ProductEntity.toDomainModel(): Product{
     thumbnail = this.thumbnail,
     discountPercentage = this.discountPercentage,
     category = this.category,
-    reviews = null
+    reviews = null,
+        stock = this.stock
     )
 }
 
@@ -25,6 +26,7 @@ fun Product.toEntity() : ProductEntity{
         price = this.price,
         thumbnail = this.thumbnail,
         discountPercentage = this.discountPercentage,
-        category = this.category)
+        category = this.category,
+        stock = this.stock)
 
 }

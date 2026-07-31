@@ -15,7 +15,8 @@ import javax.inject.Inject
             price = product.price,
             quantity = 1,
             thumbnail = product.thumbnail,
-            discountPercentage = product.discountPercentage
+            discountPercentage = product.discountPercentage,
+            stock = product.stock
         )
         cartRepository.insertItem(cartItem)
     }

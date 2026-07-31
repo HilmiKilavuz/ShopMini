@@ -18,7 +18,7 @@ import com.example.shopmini.data.local.entity.SearchHistoryEntity
 //Veritabanın altında bulunan tabloları tanımladık
 @Database(
     entities = [ProductEntity::class, SearchHistoryEntity::class, FavoriteEntity::class, CartEntity::class],
-    version = 6
+    version = 7
 )
 //Veritabanın fonksiyonlarını tanımladık
 abstract class AppDatabase : RoomDatabase() {

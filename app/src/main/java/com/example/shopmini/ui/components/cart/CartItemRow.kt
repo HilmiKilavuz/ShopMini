@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.cart
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -112,7 +112,10 @@ fun CartItemRow(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onDecrease) { Text("-") }
                     Text("${item.quantity}", fontWeight = FontWeight.Bold)
-                    IconButton(onClick = onIncrease) { Text("+") }
+                    IconButton(
+                        onClick = onIncrease,
+                        enabled = item.quantity < item.stock
+                    ) { Text("+") }
                 }
             }
         }

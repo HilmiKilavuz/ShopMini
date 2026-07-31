@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.detail
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

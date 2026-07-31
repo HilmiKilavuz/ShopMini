@@ -80,7 +80,8 @@ class ProductRepositoryImpl @Inject constructor(
                     thumbnail = localProduct.thumbnail,
                     discountPercentage = localProduct.discountPercentage,
                     category = localProduct.category,
-                    reviews = null
+                    reviews = null,
+                    stock = localProduct.stock
                 )
             } else {
 

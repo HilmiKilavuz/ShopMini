@@ -1,10 +1,9 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -19,19 +18,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun CartQuantityControl(
     quantity: Int,           // Kaç adet olduğu
     onIncrease: () -> Unit,  // + butonuna basılınca ne olacak
     onDecrease: () -> Unit,  // - butonuna basılınca ne olacak
-    modifier: Modifier = Modifier,  // dışarıdan boyut/konum kontrolü
+    modifier: Modifier = Modifier,// dışarıdan boyut/konum kontrolü
+    stock: Int
 
 ) {
 
@@ -79,6 +77,7 @@ fun CartQuantityControl(
             // [ + ] Butonu
             IconButton(
                 onClick = onIncrease,
+                enabled = quantity < stock,
                 modifier = Modifier
                     .size(40.dp)
                     .background(

@@ -1,4 +1,4 @@
-package com.example.shopmini.ui.components
+package com.example.shopmini.ui.components.favorite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
