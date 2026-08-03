@@ -1,5 +1,6 @@
 package com.example.shopmini.ui.components.cart
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,12 +36,14 @@ fun CartItemRow(
     item: CartEntity,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    itemClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { itemClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
