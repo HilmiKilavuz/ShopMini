@@ -42,8 +42,6 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
 
 
-
-
                     // Ekranlar arası geçiş haritası
                     NavHost(
                         navController = navController,
@@ -69,10 +67,15 @@ class MainActivity : ComponentActivity() {
                         }
                         // 3. Rota: Sepet Ekranı
                         composable<Screen.Cart> {
-                            CartScreen(onBackClick = {
-                                // Geri butonuna basıldığında bir önceki sayfaya döner
-                                navController.popBackStack()
-                            })
+                            CartScreen(
+                                onBackClick = {
+                                    // Geri butonuna basıldığında bir önceki sayfaya döner
+                                    navController.popBackStack()
+
+                                },
+                                onItemClick = { tiklananId ->
+                                    navController.navigate(Screen.ProductDetailScreen(productId = tiklananId))
+                                })
                         }
                         // 4. Rota: Favoriler Ekranı
                         composable<Screen.Favourites> {

@@ -28,6 +28,7 @@ import com.example.shopmini.ui.components.cart.CartSummaryBar
 fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
+    onItemClick: (Int) -> Unit
 
     ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -65,7 +66,8 @@ fun CartScreen(
                             item = item,
                             onIncrease = { viewModel.increaseQuantity(item) },
                             onDecrease = { viewModel.decreaseQuantity(item) },
-                            onDelete = { viewModel.deleteCartItem(item) }
+                            onDelete = { viewModel.deleteCartItem(item) },
+                            itemClick = { onItemClick(item.id) }
                         )
                     }
                 }
