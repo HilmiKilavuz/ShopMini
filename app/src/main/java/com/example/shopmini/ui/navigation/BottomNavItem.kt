@@ -26,7 +26,7 @@ sealed class BottomNavItem(
         title = "Cart"
     )
     object Favorites: BottomNavItem(
-        route = Screen.Favourites,
+        route = Screen.Favorites,
         icon = Icons.Default.Favorite,
         title = "Favorites"
     )

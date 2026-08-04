@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -12,6 +13,12 @@ plugins {
     // Add the Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
 }
+fun localProp(key: String): String =
+    rootProject.file("local.properties")
+        .readLines()
+        .firstOrNull { it.startsWith("$key=") }
+        ?.substringAfter("=")
+        ?.trim() ?: ""
 
 android {
     namespace = "com.example.shopmini"
@@ -23,12 +30,18 @@ android {
 
     defaultConfig {
         applicationId = "com.example.shopmini"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // local.properties'ten oku, koda göm
+
+        buildConfigField("String", "SUPABASE_URL", "\"${localProp("SUPABASE_URL")}\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"${localProp("SUPABASE_ANON_KEY")}\"")
+
     }
 
     buildTypes {
@@ -44,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -78,7 +92,7 @@ dependencies {
     // 4. İnternetteki Resimleri Gösterme (Coil)
     implementation("io.coil-kt:coil-compose:2.6.0")
     // 5. Asenkron (Coroutines)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     // 6. Dependency Injection (Hilt)
     implementation("com.google.dagger:hilt-android:2.59.2")
     ksp("com.google.dagger:hilt-android-compiler:2.59.2")
@@ -88,7 +102,7 @@ dependencies {
 
     // 8. Hilt + Navigation Compose Entegrasyonu
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    
+
     // 9. Flow Testleri (Turbine)
     testImplementation("app.cash.turbine:turbine:1.1.0")
     // Material Icons kütüphanesi
@@ -102,6 +116,19 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics")
+
+
+    // Supabase BOM (Bill of Materials — versiyon yönetimi)
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
+
+    // Auth modülü (giriş/kayıt işlemleri)
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    // PostgREST modülü (profiles tablosu için)
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+
+    // Supabase'in HTTP istekleri için Ktor motoru
+    implementation("io.ktor:ktor-client-android:3.1.3")
+
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
