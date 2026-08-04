@@ -63,6 +63,8 @@ class SignUpViewModel @Inject constructor(
         val ph = phone.value
         val pass = password.value
         val cPass = confirmPassword.value
+        val isClarification = uiState.value.isClarificationAccepted
+        val isKvkk = uiState.value.isKvkkAccepted
 
         val isFirstNameValid = Validators.isValidName(fName)
         val isLastNameValid = Validators.isValidName(lName)
@@ -70,7 +72,12 @@ class SignUpViewModel @Inject constructor(
         val isPhoneValid = ph.isBlank() || Validators.isValidPhone(ph)
         val isPasswordValid = Validators.isValidPassword(pass)
         val isConfirmMatch = pass == cPass
+
         if (!isFirstNameValid || !isLastNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmMatch) {
+            if (!isClarification || !isKvkk) {
+                _uiState.update { it.copy(showTermsError = true) }
+                return
+            }
             _uiState.update {
                 it.copy(
                     firstNameError = if (!isFirstNameValid) "Geçerli bir ad giriniz (en az 2 harf)" else null,
@@ -83,6 +90,8 @@ class SignUpViewModel @Inject constructor(
             }
             return
         }
+
+
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -106,5 +115,13 @@ class SignUpViewModel @Inject constructor(
 
         }
     }
+    fun onClarificationAcceptedChanged(accepted: Boolean) {
+        _uiState.update { it.copy(isClarificationAccepted = accepted, showTermsError = false) }
+    }
+
+    fun onKvkkAcceptedChanged(accepted: Boolean) {
+        _uiState.update { it.copy(isKvkkAccepted = accepted, showTermsError = false) }
+    }
+
 
 }
