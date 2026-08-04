@@ -24,7 +24,13 @@ sealed class Screen {
     object Profile
     // Favori sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
-    object Favourites
+    object Favorites
+    // Giriş sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Login
+    // Kayıt sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object SignUp
 
 
 }

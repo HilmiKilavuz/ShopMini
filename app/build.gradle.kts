@@ -1,4 +1,3 @@
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -31,7 +30,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.shopmini"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -120,11 +119,12 @@ dependencies {
 
 
     // Supabase BOM (Bill of Materials — versiyon yönetimi)
-    implementation(platform("io.github.jan-tennermann.supabase:bom:3.7.0"))
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
+
     // Auth modülü (giriş/kayıt işlemleri)
-    implementation("io.github.jan-tennermann.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
     // PostgREST modülü (profiles tablosu için)
-    implementation("io.github.jan-tennermann.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
 
     // Supabase'in HTTP istekleri için Ktor motoru
     implementation("io.ktor:ktor-client-android:3.1.3")
