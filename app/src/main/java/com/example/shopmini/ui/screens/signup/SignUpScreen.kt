@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -262,6 +263,49 @@ fun SignUpScreen(
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = uiState.isClarificationAccepted,
+                                onCheckedChange = { viewModel.onClarificationAcceptedChanged(it) }
+                            )
+                            Text(
+                                text = "Aydınlatma Metnini okudum ve onaylıyorum.",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            androidx.compose.material3.Checkbox(
+                                checked = uiState.isKvkkAccepted,
+                                onCheckedChange = { viewModel.onKvkkAcceptedChanged(it) }
+                            )
+                            Text(
+                                text = "KVKK Metnini okudum ve onaylıyorum.",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
+                        if (uiState.showTermsError) {
+                            Text(
+                                text = "Lütfen kayıt olmak için sözleşmeleri onaylayın.",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
                         uiState.errorMessage?.let { msg ->
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(

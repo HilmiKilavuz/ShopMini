@@ -25,5 +25,9 @@ data class SignUpUiState(
     val emailError: String? = null,
     val phoneError: String? = null,
     val passwordError: String? = null,
-    val confirmPasswordError: String? = null
+    val confirmPasswordError: String? = null,
+    val isClarificationAccepted: Boolean=false,
+    val isKvkkAccepted: Boolean=false,
+    val showTermsError: Boolean= false
+
 )
