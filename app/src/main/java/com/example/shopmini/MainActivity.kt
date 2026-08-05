@@ -30,6 +30,7 @@ import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.screens.login.LoginScreen
+import com.example.shopmini.ui.screens.profile.ProfileScreen
 import com.example.shopmini.ui.screens.signup.SignUpScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,11 +100,10 @@ class MainActivity : ComponentActivity() {
                         // Profil Ekranı (Giriş zorunlu)
                         composable<Screen.Profile> {
                             if (isUserLoggedInUseCase()) {
-                                // Profil ekranı içeriği buraya gelecek
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) { Text(text = "Profil Ekranı") }
+                                ProfileScreen(){
+                                    navController.navigate(Screen.Login)
+                                }
+
                             } else {
                                 LaunchedEffect(Unit) {
                                     navController.navigate(Screen.Login)
