@@ -5,6 +5,7 @@
 package com.example.shopmini.di
 
 import com.example.shopmini.data.remote.ShopMiniApi
+import com.example.shopmini.data.remote.TurkiyeApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +14,9 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
+
 //Network için NetworkModule sınıfı
 @Module
 @InstallIn(SingletonComponent::class)
@@ -50,6 +53,26 @@ object NetworkModule {
     @Singleton
     fun provideShopMiniApi(retrofit: Retrofit): ShopMiniApi {
         return retrofit.create(ShopMiniApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("turkiye_api")
+    fun provideTurkiyeApiRetrofit(json: Json): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://api.turkiyeapi.dev/")
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    // 2. TurkiyeApiService'i bu yeni Retrofit ile oluşturuyoruz
+    @Provides
+    @Singleton
+    fun provideTurkiyeApiService(
+        @Named("turkiye_api") retrofit: Retrofit  // Hangi Retrofit? -> turkiye_api etiketi olanı
+    ): TurkiyeApiService {
+        return retrofit.create(TurkiyeApiService::class.java)
     }
 
 

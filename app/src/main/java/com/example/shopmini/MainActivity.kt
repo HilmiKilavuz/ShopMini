@@ -31,6 +31,8 @@ import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.screens.login.LoginScreen
 import com.example.shopmini.ui.screens.profile.ProfileScreen
+import com.example.shopmini.ui.screens.profile.address.AddEditAddressScreen
+import com.example.shopmini.ui.screens.profile.address.AddressesScreen
 import com.example.shopmini.ui.screens.signup.SignUpScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,7 +52,9 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 val isAuthScreen = currentDestination?.hasRoute<Screen.Login>() == true ||
-                        currentDestination?.hasRoute<Screen.SignUp>() == true
+                        currentDestination?.hasRoute<Screen.SignUp>() == true ||
+                        currentDestination?.hasRoute<Screen.Addresses>() == true ||
+                        currentDestination?.hasRoute<Screen.AddEditAddress>() == true
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -100,9 +104,10 @@ class MainActivity : ComponentActivity() {
                         // Profil Ekranı (Giriş zorunlu)
                         composable<Screen.Profile> {
                             if (isUserLoggedInUseCase()) {
-                                ProfileScreen(){
-                                    navController.navigate(Screen.Login)
-                                }
+                                ProfileScreen(
+                                    onNavigateToLogin = { navController.navigate(Screen.Login) },
+                                    onNavigateToAddresses = { navController.navigate(Screen.Addresses) })
+
 
                             } else {
                                 LaunchedEffect(Unit) {
@@ -119,6 +124,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+                        //Giriş Yapma Ekranı
                         composable<Screen.SignUp> {
                             SignUpScreen(
                                 onNavigateToLogin = { navController.popBackStack() },
@@ -126,6 +132,24 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 }
                             )
+                        }
+                        // Adreslerim Ekranı
+                        composable<Screen.Addresses> {
+                            AddressesScreen(
+                                onNavigateToAddAddress = { navController.navigate(Screen.AddEditAddress()) },
+                                onNavigateToEditAddress = { addressId ->
+                                    navController.navigate(Screen.AddEditAddress(addressId = addressId))
+                                },
+                                onNavigateBack = { navController.popBackStack() }
+                            )
+
+                        }
+                        // Yeni Adres Ekranı
+                        composable<Screen.AddEditAddress> {
+                            AddEditAddressScreen(
+                                onNavigateBack = { navController.popBackStack() }
+                            )
+
                         }
                     }
                 }
