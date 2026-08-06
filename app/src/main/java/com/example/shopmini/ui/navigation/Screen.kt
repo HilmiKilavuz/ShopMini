@@ -31,6 +31,12 @@ sealed class Screen {
     // Kayıt sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object SignUp
+    // Adreslerim sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Addresses
+    // Yeni adres ekleme sayfası rotası
+    @Serializable
+    data class AddEditAddress(val addressId: String? = null)
 
 
 }

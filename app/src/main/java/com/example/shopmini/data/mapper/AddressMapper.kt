@@ -1,6 +1,6 @@
 package com.example.shopmini.data.mapper
 
-import com.example.shopmini.data.model.AddressDto
+import com.example.shopmini.data.model.address.AddressDto
 import com.example.shopmini.domain.model.Address
 
 // Supabase'den gelen DTO'yu, UI'ın anladığı saf Address'e çevirir

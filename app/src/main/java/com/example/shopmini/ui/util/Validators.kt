@@ -70,4 +70,9 @@ object Validators {
         val pattern = Regex("^[a-zA-ZğüşıöçĞÜŞİÖÇ]{2,}$")
         return pattern.matches(name.trim())
     }
-}
+
+    fun isValidFullName(name: String): Boolean {
+        val pattern = Regex("^[a-zA-ZğüşıöçĞÜŞİÖÇ]{2,}(\\s[a-zA-ZğüşıöçĞÜŞİÖÇ]{2,})+$")
+        return pattern.matches(name.trim())
+    }
+}

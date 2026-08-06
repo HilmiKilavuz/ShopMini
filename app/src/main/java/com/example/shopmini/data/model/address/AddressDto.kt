@@ -1,7 +1,8 @@
-package com.example.shopmini.data.model
+package com.example.shopmini.data.model.address
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
 //Adres verisini karşılayan veri sınıfı
 @Serializable
 data class AddressDto(

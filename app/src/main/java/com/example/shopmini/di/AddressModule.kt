@@ -1,6 +1,7 @@
 package com.example.shopmini.di
 
 import com.example.shopmini.data.repository.AddressRepositoryImpl
+import com.example.shopmini.domain.repository.AddressRepository
 
 import dagger.Binds
 import dagger.Module
@@ -15,5 +16,5 @@ import javax.inject.Singleton
 abstract class AddressModule {
     @Binds
     @Singleton
-    abstract fun bindAuthRepository(impl: AddressRepositoryImpl): AddressModule
+    abstract fun bindAuthRepository(impl: AddressRepositoryImpl): AddressRepository
 }
