@@ -28,7 +28,8 @@ import com.example.shopmini.ui.components.cart.CartSummaryBar
 fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    onCheckoutClick: () -> Unit
 
     ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -72,7 +73,7 @@ fun CartScreen(
                     }
                 }
                 // Alt fiyat özeti
-                CartSummaryBar(uiState = uiState)
+                CartSummaryBar(uiState = uiState, onCheckoutClick = onCheckoutClick)
             }
         }
     }

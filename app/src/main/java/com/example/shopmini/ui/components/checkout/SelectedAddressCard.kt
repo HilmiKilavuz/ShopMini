@@ -1,7 +1,6 @@
-package com.example.shopmini.ui.components.address
+package com.example.shopmini.ui.components.checkout
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,34 +31,17 @@ import com.example.shopmini.ui.theme.Teal40
 import com.example.shopmini.ui.theme.TealGrey40
 
 /**
- * Kullanıcının kayıtlı adreslerini listeleyen, yeniden kullanılabilir adres kartı bileşeni.
- *
- * Sol tarafta teal gradyan aksent şeridi, adres başlığı yanında "Varsayılan" chip'i
- * ve sağ tarafa dışarıdan verilebilen aksiyon alanı (Düzenle/Sil veya RadioButton) içerir.
- *
- * @param address Gösterilecek adres verisi
- * @param modifier Dışarıdan uygulanacak Modifier
- * @param onClick Kartın tamamına tıklanınca tetiklenen aksiyon
- * @param actionContent Sağ tarafa yerleştirilecek butonlar (ör. Düzenle/Sil veya RadioButton)
+ * Seçili adresi gösteren kart. Teal sol şerit, "Varsayılan" chip'i ve onay ikonu içerir.
  */
 @Composable
-fun AddressCard(
-    address: Address,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
-    actionContent: @Composable () -> Unit = {}
-) {
+fun SelectedAddressCard(address: Address) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-
             // Sol teal aksent şeridi
             Box(
                 modifier = Modifier
@@ -68,14 +54,12 @@ fun AddressCard(
                     )
             )
 
-            // Adres bilgileri
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                // Başlık satırı + "Varsayılan" chip
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -87,6 +71,7 @@ fun AddressCard(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    // "Varsayılan" chip
                     if (address.isDefault) {
                         Surface(
                             shape = RoundedCornerShape(20.dp),
@@ -120,14 +105,15 @@ fun AddressCard(
                 )
             }
 
-            // Dışarıdan vereceğimiz aksiyonlar (Düzenle/Sil veya RadioButton)
-            Box(
+            // Sağ taraf: Seçili onay ikonu
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = "Seçili",
+                tint = Teal40,
                 modifier = Modifier
-                    .padding(top = 12.dp, end = 8.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                actionContent()
-            }
+                    .padding(top = 16.dp, end = 16.dp)
+                    .size(22.dp)
+            )
         }
     }
 }

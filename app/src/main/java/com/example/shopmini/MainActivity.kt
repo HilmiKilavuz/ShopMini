@@ -26,6 +26,7 @@ import com.example.shopmini.domain.usecase.auth.IsUserLoggedInUseCase
 import com.example.shopmini.ui.components.BottomNavigationBar
 import com.example.shopmini.ui.navigation.Screen
 import com.example.shopmini.ui.screens.cart.CartScreen
+import com.example.shopmini.ui.screens.checkout.CheckoutScreen
 import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
@@ -54,7 +55,8 @@ class MainActivity : ComponentActivity() {
                 val isAuthScreen = currentDestination?.hasRoute<Screen.Login>() == true ||
                         currentDestination?.hasRoute<Screen.SignUp>() == true ||
                         currentDestination?.hasRoute<Screen.Addresses>() == true ||
-                        currentDestination?.hasRoute<Screen.AddEditAddress>() == true
+                        currentDestination?.hasRoute<Screen.AddEditAddress>() == true ||
+                        currentDestination?.hasRoute<Screen.Checkout>() == true
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -87,6 +89,9 @@ class MainActivity : ComponentActivity() {
                                 onBackClick = { navController.popBackStack() },
                                 onItemClick = { tiklananId ->
                                     navController.navigate(Screen.ProductDetailScreen(productId = tiklananId))
+                                },
+                                onCheckoutClick = {
+                                    navController.navigate(Screen.Checkout)
                                 }
                             )
                         }
@@ -151,6 +156,14 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }
+                        // Checkout: Teslimat Adresi Seçim Ekranı
+                        composable<Screen.Checkout> {
+                            CheckoutScreen(
+                                onNavigateBack = { navController.popBackStack() },
+                                onNavigateToAddresses = { navController.navigate(Screen.Addresses) }
+                            )
+                        }
+
                     }
                 }
             }
