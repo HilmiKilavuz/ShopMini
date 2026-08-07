@@ -37,6 +37,10 @@ sealed class Screen {
     // Yeni adres ekleme sayfası rotası
     @Serializable
     data class AddEditAddress(val addressId: String? = null)
+    // Ödeme sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
+    @Serializable
+    object Checkout
+
 
 
 }

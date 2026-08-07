@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.example.shopmini.ui.screens.cart.CartUiState
 //Sepetteki ürünlerin özeti
 @Composable
-fun CartSummaryBar(uiState: CartUiState) {
+fun CartSummaryBar(uiState: CartUiState,
+                   onCheckoutClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -78,7 +79,7 @@ fun CartSummaryBar(uiState: CartUiState) {
 
 
             Button(
-                onClick = { /*   ödeme ekranı */ },
+                onClick =  onCheckoutClick ,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
