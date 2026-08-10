@@ -19,28 +19,42 @@ sealed class Screen {
     // Sepet sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Cart
+
     // Profil sayfası rotası,şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Profile
+
     // Favori sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Favorites
+
     // Giriş sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Login
+
     // Kayıt sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object SignUp
+
     // Adreslerim sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Addresses
+
     // Yeni adres ekleme sayfası rotası
     @Serializable
     data class AddEditAddress(val addressId: String? = null)
+
     // Ödeme sayfası rotası, şimdilik herhangi bir parametreye ihtiyacı yoktur.
     @Serializable
     object Checkout
 
+    //Ödeme Sayfası
+    @Serializable
+    object Payment
+
+    //Başarılı Sipariş
+    @Serializable
+    object OrderSuccess
 
 
 }

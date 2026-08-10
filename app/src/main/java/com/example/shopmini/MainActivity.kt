@@ -31,6 +31,8 @@ import com.example.shopmini.ui.screens.detail.ProductDetailScreen
 import com.example.shopmini.ui.screens.favorites.FavoriteScreen
 import com.example.shopmini.ui.screens.home.HomeScreen
 import com.example.shopmini.ui.screens.login.LoginScreen
+import com.example.shopmini.ui.screens.payment.OrderSuccessScreen
+import com.example.shopmini.ui.screens.payment.PaymentScreen
 import com.example.shopmini.ui.screens.profile.ProfileScreen
 import com.example.shopmini.ui.screens.profile.address.AddEditAddressScreen
 import com.example.shopmini.ui.screens.profile.address.AddressesScreen
@@ -56,7 +58,9 @@ class MainActivity : ComponentActivity() {
                         currentDestination?.hasRoute<Screen.SignUp>() == true ||
                         currentDestination?.hasRoute<Screen.Addresses>() == true ||
                         currentDestination?.hasRoute<Screen.AddEditAddress>() == true ||
-                        currentDestination?.hasRoute<Screen.Checkout>() == true
+                        currentDestination?.hasRoute<Screen.Checkout>() == true ||
+                        currentDestination?.hasRoute<Screen.Payment>() == true ||
+                        currentDestination?.hasRoute<Screen.OrderSuccess>() == true
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -160,10 +164,35 @@ class MainActivity : ComponentActivity() {
                         composable<Screen.Checkout> {
                             CheckoutScreen(
                                 onNavigateBack = { navController.popBackStack() },
-                                onNavigateToAddresses = { navController.navigate(Screen.Addresses) }
+                                onNavigateToAddresses = { navController.navigate(Screen.Addresses) },
+                                onNavigateToPayment = { navController.navigate(Screen.Payment) }
                             )
                         }
+                        //Ödeme Ekranı
+                        composable<Screen.Payment> {
+                            PaymentScreen(
+                                onNavigateBack = { navController.popBackStack() },
+                                onNavigateToSuccess = {
+                                    navController.navigate(Screen.OrderSuccess){
+                                        popUpTo(Screen.Cart) { inclusive = true }
+                                    }
 
+                                })
+                        }
+                        composable<Screen.OrderSuccess> {
+                            OrderSuccessScreen(
+                                onNavigateToHome = {
+                                    navController.navigate(Screen.Home) {
+                                        popUpTo(Screen.Home) {
+                                            inclusive =
+                                                false  // Home'u silme, sadece üstündekileri temizle
+
+                                        }
+                                    }
+
+
+                                })
+                        }
                     }
                 }
             }
