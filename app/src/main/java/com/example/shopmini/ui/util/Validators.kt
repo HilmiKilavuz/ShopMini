@@ -75,4 +75,10 @@ object Validators {
         val pattern = Regex("^[a-zA-ZğüşıöçĞÜŞİÖÇ]{2,}(\\s[a-zA-ZğüşıöçĞÜŞİÖÇ]{2,})+$")
         return pattern.matches(name.trim())
     }
+
+    fun isValidValidateExpiry(date:String): Boolean{
+        val regex = Regex("^(0[1-9]|1[0-2])/([0-9]{2})$")
+        return date.matches(regex)
+
+    }
 }

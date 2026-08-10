@@ -40,7 +40,8 @@ fun CheckoutContent(
     uiState: CheckoutUiState,
     onAddressSelected: (Address) -> Unit,
     onNavigateToAddresses: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToPayment:()->Unit
 ) {
     // Açılır adres listesinin açık/kapalı durumu
     var isDropdownExpanded by remember { mutableStateOf(false) }
@@ -105,7 +106,7 @@ fun CheckoutContent(
 
         // --- Alt kısım: Sipariş özeti + Devam butonu (sabitlenmiş) ---
         CheckoutSummaryBar(
-            onContinueClick = { /* ileride ödeme adımı eklenecek */ }
+            onNavigateToPayment = onNavigateToPayment
         )
     }
 }

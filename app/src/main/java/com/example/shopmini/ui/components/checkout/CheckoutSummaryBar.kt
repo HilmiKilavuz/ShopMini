@@ -33,7 +33,7 @@ import com.example.shopmini.ui.theme.TealGrey40
  * Fiyat bilgileri şimdilik sabit placeholder — ileride CartUiState veya bir Order modeli bağlanacak.
  */
 @Composable
-fun CheckoutSummaryBar(onContinueClick: () -> Unit) {
+fun CheckoutSummaryBar(onNavigateToPayment: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -46,7 +46,7 @@ fun CheckoutSummaryBar(onContinueClick: () -> Unit) {
         ) {
             // Devam butonu — teal gradient
             Button(
-                onClick = onContinueClick,
+                onClick = onNavigateToPayment,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
