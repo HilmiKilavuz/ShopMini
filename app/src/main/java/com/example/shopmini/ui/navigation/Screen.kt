@@ -56,5 +56,9 @@ sealed class Screen {
     @Serializable
     object OrderSuccess
 
+    //Siparişlerim
+    @Serializable
+    object Orders
+
 
 }

@@ -13,6 +13,8 @@ interface CartRepository {
     suspend fun deleteItem(cart: CartEntity)
     //Sepetten miktarı günceller
     suspend fun updateQuantity(productId: Int, newQuantity: Int)
+    //Sepetten tüm ürünleri siler
+    suspend fun clearCart()
 
 
 }

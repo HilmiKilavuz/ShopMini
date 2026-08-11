@@ -36,6 +36,7 @@ import com.example.shopmini.ui.screens.payment.PaymentScreen
 import com.example.shopmini.ui.screens.profile.ProfileScreen
 import com.example.shopmini.ui.screens.profile.address.AddEditAddressScreen
 import com.example.shopmini.ui.screens.profile.address.AddressesScreen
+import com.example.shopmini.ui.screens.profile.orders.OrdersScreen
 import com.example.shopmini.ui.screens.signup.SignUpScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -115,7 +116,9 @@ class MainActivity : ComponentActivity() {
                             if (isUserLoggedInUseCase()) {
                                 ProfileScreen(
                                     onNavigateToLogin = { navController.navigate(Screen.Login) },
-                                    onNavigateToAddresses = { navController.navigate(Screen.Addresses) })
+                                    onNavigateToAddresses = { navController.navigate(Screen.Addresses) },
+                                    onNavigateToOrdersPage = {navController.navigate(Screen.Orders)})
+
 
 
                             } else {
@@ -173,7 +176,7 @@ class MainActivity : ComponentActivity() {
                             PaymentScreen(
                                 onNavigateBack = { navController.popBackStack() },
                                 onNavigateToSuccess = {
-                                    navController.navigate(Screen.OrderSuccess){
+                                    navController.navigate(Screen.OrderSuccess) {
                                         popUpTo(Screen.Cart) { inclusive = true }
                                     }
 
@@ -192,6 +195,11 @@ class MainActivity : ComponentActivity() {
 
 
                                 })
+                        }
+
+                        composable<Screen.Orders> {
+                            OrdersScreen(onNavigateBack = { navController.popBackStack() })
+
                         }
                     }
                 }
