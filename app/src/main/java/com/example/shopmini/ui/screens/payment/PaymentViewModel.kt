@@ -1,23 +1,28 @@
 package com.example.shopmini.ui.screens.payment
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shopmini.domain.usecase.cart.ClearCartUseCase
+import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
+import com.example.shopmini.domain.usecase.order.SaveOrderUseCase
 import com.example.shopmini.ui.util.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class PaymentViewModel @Inject constructor() : ViewModel() {
+class PaymentViewModel @Inject constructor(
+    private val getCartItemsUseCase: GetCartItemsUseCase, // Sepeti okumak için
+    private val saveOrderUseCase: SaveOrderUseCase,       // Siparişi kaydetmek için
+    private val clearCartUseCase: ClearCartUseCase        // Sepeti temizlemek için
+) : ViewModel() {
     private val _uiState = MutableStateFlow(PaymentUiState())
     val uiState: StateFlow<PaymentUiState> = _uiState.asStateFlow()
 
@@ -33,8 +38,8 @@ class PaymentViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onExpiryDateChange(expiryDate: String) {
-        if (expiryDate.length > 5)
-        _uiState.value = _uiState.value.copy(expiryDate = expiryDate)
+        if (expiryDate.length > 5) return
+            _uiState.value = _uiState.value.copy(expiryDate = expiryDate)
 
 
     }
@@ -63,6 +68,14 @@ class PaymentViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             delay(2000L)
+            val cartItems = getCartItemsUseCase().first()
+            val subtotal = cartItems.sumOf { it.price * it.quantity }
+            val discountTotal =
+                cartItems.sumOf { it.price * it.quantity * (it.discountPercentage / 100) }
+            val totalAmount = subtotal - discountTotal
+            saveOrderUseCase(cartItems, totalAmount)
+            clearCartUseCase()
+
             _uiState.update { it.copy(isLoading = false, isPaymentSuccessful = true) }
         }
 

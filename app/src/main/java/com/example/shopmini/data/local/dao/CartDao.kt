@@ -26,6 +26,10 @@ interface CartDao {
     //Sepetten miktarı günceller
     @Query("UPDATE cart SET quantity = :newQuantity WHERE id = :productId")
     suspend fun updateQuantity(productId: Int, newQuantity: Int)
+    //
+    @Query("DELETE FROM cart")
+    suspend fun deleteAllItems()
+
 
 
 
