@@ -3,6 +3,7 @@ package com.example.shopmini.ui.screens.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopmini.data.local.entity.CartEntity
+import com.example.shopmini.domain.usecase.auth.IsUserLoggedInUseCase
 import com.example.shopmini.domain.usecase.cart.DeleteItemUseCase
 import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
 import com.example.shopmini.domain.usecase.cart.UpdateCartQuantityUseCase
@@ -20,7 +21,8 @@ class CartViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase,
     private val deleteCartItemUseCase: DeleteItemUseCase,
     private val updateCartQuantityUseCase: UpdateCartQuantityUseCase,
-    private val analyticsManager: AnalyticsManager
+    private val analyticsManager: AnalyticsManager,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CartUiState())
     val uiState: StateFlow<CartUiState> = _uiState.asStateFlow()
@@ -103,9 +105,21 @@ class CartViewModel @Inject constructor(
 
     }
 
-    fun logBeginCheckout(){
-        analyticsManager.logBeginCheckout(uiState.value.grandTotal)
+    fun onCheckoutClicked() {
+        if (isUserLoggedInUseCase()) {
+            // Giriş yapılmış → analytics logla, checkout'a geç
+            analyticsManager.logBeginCheckout(uiState.value.grandTotal)
+        } else {
+            // Giriş yapılmamış → login ekranına yönlendir
+            _uiState.value = _uiState.value.copy(navigateToLogin = true)
+        }
     }
+
+    // Login navigasyonu tamamlandığında state'i sıfırla
+    fun onNavigateToLoginHandled() {
+        _uiState.value = _uiState.value.copy(navigateToLogin = false)
+    }
+
 
 
 

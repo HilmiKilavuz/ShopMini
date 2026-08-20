@@ -11,5 +11,6 @@ import com.example.shopmini.data.local.entity.CartEntity
         val subtotal: Double = 0.0,
         val discountTotal: Double = 0.0,
         val grandTotal: Double = 0.0,
-        val error: String? = null
+        val error: String? = null,
+        val navigateToLogin: Boolean = false
     )
