@@ -89,7 +89,6 @@ class MainActivity : ComponentActivity() {
                         }
                         // Sepet Ekranı
                         composable<Screen.Cart> {
-
                             CartScreen(
                                 onBackClick = { navController.popBackStack() },
                                 onItemClick = { tiklananId ->
@@ -97,9 +96,13 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onCheckoutClick = {
                                     navController.navigate(Screen.Checkout)
+                                },
+                                onNavigateToLogin = {              // ← bunu ekle
+                                    navController.navigate(Screen.Login)
                                 }
                             )
                         }
+
                         // Favoriler Ekranı
                         composable<Screen.Favorites> {
 

@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,9 +31,16 @@ fun CartScreen(
     onBackClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     onCheckoutClick: () -> Unit,
+    onNavigateToLogin: () -> Unit
 
-    ) {
+) {
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(uiState.navigateToLogin) {
+        if (uiState.navigateToLogin) {
+            onNavigateToLogin()              // ← dışarıdan gelecek lambda
+            viewModel.onNavigateToLoginHandled()  // state'i sıfırla
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -73,10 +81,10 @@ fun CartScreen(
                     }
                 }
                 // Alt fiyat özeti
-                CartSummaryBar(uiState = uiState, onCheckoutClick = {
-                    viewModel.logBeginCheckout()
-                    onCheckoutClick()
-                })
+                CartSummaryBar(
+                    uiState = uiState,
+                    onCheckoutClick = { viewModel.onCheckoutClicked() }  // ← logBeginCheckout değil artık
+                )
             }
         }
     }
