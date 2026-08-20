@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopmini.domain.usecase.cart.ClearCartUseCase
 import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
 import com.example.shopmini.domain.usecase.order.SaveOrderUseCase
+import com.example.shopmini.ui.util.AnalyticsManager
 import com.example.shopmini.ui.util.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class PaymentViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase, // Sepeti okumak için
     private val saveOrderUseCase: SaveOrderUseCase,       // Siparişi kaydetmek için
-    private val clearCartUseCase: ClearCartUseCase        // Sepeti temizlemek için
+    private val clearCartUseCase: ClearCartUseCase, // Sepeti temizlemek için
+    private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PaymentUiState())
     val uiState: StateFlow<PaymentUiState> = _uiState.asStateFlow()
@@ -74,6 +76,7 @@ class PaymentViewModel @Inject constructor(
                 cartItems.sumOf { it.price * it.quantity * (it.discountPercentage / 100) }
             val totalAmount = subtotal - discountTotal
             saveOrderUseCase(cartItems, totalAmount)
+            analyticsManager.logPurchase(totalAmount, "")
             clearCartUseCase()
 
             _uiState.update { it.copy(isLoading = false, isPaymentSuccessful = true) }
@@ -148,4 +151,5 @@ class PaymentViewModel @Inject constructor(
 
 
     }
+
 }

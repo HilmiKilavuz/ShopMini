@@ -12,6 +12,7 @@ import com.example.shopmini.domain.usecase.cart.UpdateCartQuantityUseCase
 import com.example.shopmini.domain.usecase.favorite.CheckIfFavoriteUseCase
 import com.example.shopmini.domain.usecase.favorite.ToggleFavoriteUseCase
 import com.example.shopmini.domain.usecase.product.GetProductDetailUseCase
+import com.example.shopmini.ui.util.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,7 +39,7 @@ class ProductDetailViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase,
     private val updateCartQuantityUseCase: UpdateCartQuantityUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
-
+    private val analyticsManager: AnalyticsManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -56,7 +57,8 @@ class ProductDetailViewModel @Inject constructor(
             initialValue = false
         )
     } ?: MutableStateFlow(false)
-// Bu ürünün sepetteki mevcut CartEntity'sini tutar. null ise sepette yok.
+
+    // Bu ürünün sepetteki mevcut CartEntity'sini tutar. null ise sepette yok.
     val cartItem: StateFlow<CartEntity?> = savedStateHandle.get<Int>("productId")?.let { id ->
         getCartItemsUseCase()
             .map { items -> items.find { it.id == id } }
@@ -88,6 +90,7 @@ class ProductDetailViewModel @Inject constructor(
             try {
                 val product = getProductDetailUseCase(id)
                 _uiState.value = ProductDetailUiState.Success(product)
+                analyticsManager.logViewItem(product)
             } catch (e: Exception) {
                 _uiState.value = ProductDetailUiState.Error(e.message ?: "Unknown error")
             } finally {
@@ -98,7 +101,8 @@ class ProductDetailViewModel @Inject constructor(
 
 
     }
-// Ürünü favorilere eklemek için kullanılan fonksiyon
+
+    // Ürünü favorilere eklemek için kullanılan fonksiyon
     fun toggleFavorite(product: Product) {
         viewModelScope.launch {
             toggleFavoriteUseCase(product, isFavorite.value)
@@ -111,10 +115,12 @@ class ProductDetailViewModel @Inject constructor(
     fun insertCart(product: Product) {
         viewModelScope.launch {
             insertItemUseCase(product)
+            analyticsManager.logAddToCart(product)
         }
 
 
     }
+
     // Adet arttırma işlemi için kullanılan fonksiyon
     fun increaseQuantity(item: CartEntity) {
         viewModelScope.launch {
