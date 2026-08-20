@@ -6,6 +6,7 @@ import com.example.shopmini.data.local.entity.CartEntity
 import com.example.shopmini.domain.usecase.cart.DeleteItemUseCase
 import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
 import com.example.shopmini.domain.usecase.cart.UpdateCartQuantityUseCase
+import com.example.shopmini.ui.util.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase,
     private val deleteCartItemUseCase: DeleteItemUseCase,
-    private val updateCartQuantityUseCase: UpdateCartQuantityUseCase
+    private val updateCartQuantityUseCase: UpdateCartQuantityUseCase,
+    private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CartUiState())
     val uiState: StateFlow<CartUiState> = _uiState.asStateFlow()
@@ -100,6 +102,11 @@ class CartViewModel @Inject constructor(
         }
 
     }
+
+    fun logBeginCheckout(){
+        analyticsManager.logBeginCheckout(uiState.value.grandTotal)
+    }
+
 
 
 }

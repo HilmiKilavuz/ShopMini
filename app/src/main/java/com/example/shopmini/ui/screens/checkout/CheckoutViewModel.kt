@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopmini.domain.model.Address
 import com.example.shopmini.domain.usecase.address.GetAddressesUseCase
+import com.example.shopmini.ui.util.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CheckoutViewModel @Inject constructor(
-    private val getAddressesUseCase: GetAddressesUseCase
+    private val getAddressesUseCase: GetAddressesUseCase,
+    private val analyticsManager: AnalyticsManager
 
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CheckoutUiState())
@@ -44,6 +46,7 @@ class CheckoutViewModel @Inject constructor(
     }
     fun onAddressSelected(address: Address) {
         _uiState.update { it.copy(selectedAddress = address) }
+        analyticsManager.logAddShippingInfo()
     }
 
 }

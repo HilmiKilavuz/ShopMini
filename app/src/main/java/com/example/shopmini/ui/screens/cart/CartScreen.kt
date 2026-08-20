@@ -29,7 +29,7 @@ fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    onCheckoutClick: () -> Unit
+    onCheckoutClick: () -> Unit,
 
     ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -73,7 +73,10 @@ fun CartScreen(
                     }
                 }
                 // Alt fiyat özeti
-                CartSummaryBar(uiState = uiState, onCheckoutClick = onCheckoutClick)
+                CartSummaryBar(uiState = uiState, onCheckoutClick = {
+                    viewModel.logBeginCheckout()
+                    onCheckoutClick()
+                })
             }
         }
     }
