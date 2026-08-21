@@ -42,7 +42,7 @@ fun OrdersScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (uiState.error != null) {
                 Text(
-                    text = uiState.error ?: "",
+                    text = "Siparişler yüklenemedi.",
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.align(Alignment.Center)
                 )

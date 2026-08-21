@@ -93,7 +93,7 @@ fun AddressesScreen(
                 }
 
                 is AddressesUiState.Error -> {
-                    Text(text = state.message, modifier = Modifier.align(Alignment.Center))
+                    Text(text = "Adresler yüklenemedi.", modifier = Modifier.align(Alignment.Center))
                 }
 
                 is AddressesUiState.Success -> {

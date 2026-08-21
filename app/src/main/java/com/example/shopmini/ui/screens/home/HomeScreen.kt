@@ -142,14 +142,13 @@ fun HomeScreen(
             }
 
             is HomeUiState.Error -> {
-                val message = (uiState as HomeUiState.Error).message
                 // Hata mesajı ve "Tekrar Dene" butonu
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Hata: $message")
+                    Text(text = "Ürünler yüklenemedi.")
                     Button(onClick = { viewModel.loadProducts() }) {
                         Text("Tekrar Dene")
                     }

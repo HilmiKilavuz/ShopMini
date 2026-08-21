@@ -69,13 +69,12 @@ fun FavoriteScreen(
         }
 
         is FavoriteUiState.Error -> {
-            val message = (uiState as FavoriteUiState.Error).message
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Hata: $message")
+                Text(text = " Favoriler yüklenemedi.")
 
             }
 
