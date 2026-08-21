@@ -103,7 +103,7 @@ fun CheckoutScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.error ?: "Bir hata oluştu.",
+                        text = "Bir sorun oluştu.",
                         color = MaterialTheme.colorScheme.error
                     )
                 }

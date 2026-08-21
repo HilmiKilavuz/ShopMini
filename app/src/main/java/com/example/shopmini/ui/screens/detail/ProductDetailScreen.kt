@@ -58,13 +58,12 @@ fun ProductDetailScreen(
         }
 
         is ProductDetailUiState.Error -> {
-            val message = (uiState as ProductDetailUiState.Error).message
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Hata: $message")
+                Text(text = "Ürün detayı yüklenemedi.")
 
             }
         }

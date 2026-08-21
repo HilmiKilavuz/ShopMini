@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
                                 onCheckoutClick = {
                                     navController.navigate(Screen.Checkout)
                                 },
-                                onNavigateToLogin = {              // ← bunu ekle
+                                onNavigateToLogin = {
                                     navController.navigate(Screen.Login)
                                 }
                             )

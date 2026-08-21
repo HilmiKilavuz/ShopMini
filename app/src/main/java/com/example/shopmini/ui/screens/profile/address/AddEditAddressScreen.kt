@@ -57,7 +57,7 @@ fun AddEditAddressScreen(
 
         is AddEditAddressUiState.Error -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = state.message, color = MaterialTheme.colorScheme.error)
+                Text(text = "Adres kaydedilemedi.", color = MaterialTheme.colorScheme.error)
             }
         }
 
