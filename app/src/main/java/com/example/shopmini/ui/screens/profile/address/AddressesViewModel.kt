@@ -30,10 +30,8 @@ class AddressesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<AddressesUiState>(AddressesUiState.Loading)
     val uiState: StateFlow<AddressesUiState> = _uiState.asStateFlow()
 
-    init {
-        // ViewModel ilk oluşturulduğunda adresleri yükle
-        loadAddresses()
-    }
+
+
 
     /**
      * Kullanıcıya ait olan tüm adresleri veritabanından çeker.
