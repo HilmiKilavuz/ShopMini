@@ -109,6 +109,7 @@ class CartViewModel @Inject constructor(
         if (isUserLoggedInUseCase()) {
             // Giriş yapılmış → analytics logla, checkout'a geç
             analyticsManager.logBeginCheckout(uiState.value.grandTotal)
+            _uiState.value = _uiState.value.copy(navigateToCheckout = true)
         } else {
             // Giriş yapılmamış → login ekranına yönlendir
             _uiState.value = _uiState.value.copy(navigateToLogin = true)
@@ -120,6 +121,9 @@ class CartViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(navigateToLogin = false)
     }
 
+    fun onNavigateToCheckoutHandled() {
+        _uiState.value = _uiState.value.copy(navigateToCheckout = false)
+    }
 
 
 

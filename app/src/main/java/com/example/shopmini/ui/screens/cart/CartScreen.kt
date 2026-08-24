@@ -41,6 +41,13 @@ fun CartScreen(
             viewModel.onNavigateToLoginHandled()  // state'i sıfırla
         }
     }
+    LaunchedEffect(uiState.navigateToCheckout) {
+        if (uiState.navigateToCheckout) {
+            onCheckoutClick()                           // checkout ekranına git
+            viewModel.onNavigateToCheckoutHandled()     // state'i sıfırla
+        }
+    }
+
 
     Scaffold(
         topBar = {
