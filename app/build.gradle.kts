@@ -129,6 +129,12 @@ dependencies {
     // Supabase'in HTTP istekleri için Ktor motoru
     implementation("io.ktor:ktor-client-android:3.1.3")
 
+    //Compose ile grafik çizmek için Vico kütüphanesi
+    implementation("com.patrykandpatrick.vico:compose:1.15.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.15.0")
+    implementation("com.patrykandpatrick.vico:core:1.15.0")
+
+
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

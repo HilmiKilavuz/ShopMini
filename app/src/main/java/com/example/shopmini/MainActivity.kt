@@ -38,6 +38,7 @@ import com.example.shopmini.ui.screens.profile.address.AddEditAddressScreen
 import com.example.shopmini.ui.screens.profile.address.AddressesScreen
 import com.example.shopmini.ui.screens.profile.orders.OrdersScreen
 import com.example.shopmini.ui.screens.signup.SignUpScreen
+import com.example.shopmini.ui.screens.statistics.StatisticsScreen
 import com.example.shopmini.ui.theme.ShopMiniTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -120,7 +121,9 @@ class MainActivity : ComponentActivity() {
                                 ProfileScreen(
                                     onNavigateToLogin = { navController.navigate(Screen.Login) },
                                     onNavigateToAddresses = { navController.navigate(Screen.Addresses) },
-                                    onNavigateToOrdersPage = {navController.navigate(Screen.Orders)})
+                                    onNavigateToOrdersPage = {navController.navigate(Screen.Orders)},
+                                    onNavigateToStatistics = {navController.navigate(Screen.Statistics)})
+
 
 
 
@@ -203,6 +206,9 @@ class MainActivity : ComponentActivity() {
                         composable<Screen.Orders> {
                             OrdersScreen(onNavigateBack = { navController.popBackStack() })
 
+                        }
+                        composable<Screen.Statistics> {
+                            StatisticsScreen(onNavigateBack = { navController.popBackStack() })
                         }
                     }
                 }

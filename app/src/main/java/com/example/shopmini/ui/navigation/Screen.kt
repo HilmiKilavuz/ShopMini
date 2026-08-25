@@ -60,5 +60,10 @@ sealed class Screen {
     @Serializable
     object Orders
 
+    //İstatistikler
+    @Serializable
+    object Statistics
+
+
 
 }
