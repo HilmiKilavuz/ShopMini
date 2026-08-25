@@ -60,6 +60,7 @@ class StatisticsViewModel @Inject constructor(
 
         }
 
+        //Favoriler alınıyor fakat şu an kullanılmıyor
         viewModelScope.launch {
             try {
                 // Favorileri de çek
