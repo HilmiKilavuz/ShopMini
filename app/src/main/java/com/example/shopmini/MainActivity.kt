@@ -202,11 +202,13 @@ class MainActivity : ComponentActivity() {
 
                                 })
                         }
+                        // Siparişlerim Ekranı
 
                         composable<Screen.Orders> {
                             OrdersScreen(onNavigateBack = { navController.popBackStack() })
 
                         }
+                        // İstatistikler Ekranı
                         composable<Screen.Statistics> {
                             StatisticsScreen(onNavigateBack = { navController.popBackStack() })
                         }
