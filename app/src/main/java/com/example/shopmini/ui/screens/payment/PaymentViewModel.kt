@@ -6,6 +6,7 @@ import com.example.shopmini.domain.usecase.cart.ClearCartUseCase
 import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
 import com.example.shopmini.domain.usecase.order.SaveOrderUseCase
 import com.example.shopmini.ui.util.AnalyticsManager
+import com.example.shopmini.ui.util.NotificationService
 import com.example.shopmini.ui.util.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -23,7 +24,8 @@ class PaymentViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase, // Sepeti okumak için
     private val saveOrderUseCase: SaveOrderUseCase,       // Siparişi kaydetmek için
     private val clearCartUseCase: ClearCartUseCase, // Sepeti temizlemek için
-    private val analyticsManager: AnalyticsManager
+    private val analyticsManager: AnalyticsManager,
+    private val notificationService: NotificationService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PaymentUiState())
     val uiState: StateFlow<PaymentUiState> = _uiState.asStateFlow()
@@ -78,6 +80,7 @@ class PaymentViewModel @Inject constructor(
             saveOrderUseCase(cartItems, totalAmount)
             analyticsManager.logPurchase(totalAmount, "")
             clearCartUseCase()
+            notificationService.sendOrderConfirmationNotification(totalAmount)
 
             _uiState.update { it.copy(isLoading = false, isPaymentSuccessful = true) }
         }
