@@ -29,6 +29,7 @@ class ShopMiniMessagingService : FirebaseMessagingService() {
     @InstallIn(SingletonComponent::class)
     interface FcmEntryPoint {
         fun supabaseClient(): SupabaseClient
+        fun notificationService(): NotificationService
     }
 
     override fun onNewToken(token: String) {
@@ -64,7 +65,23 @@ class ShopMiniMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Log.d("FCM_MESSAGE", "Mesaj alındı: ${remoteMessage.notification?.title}")
+        
+        val title = remoteMessage.notification?.title ?: "Yeni Bildirim"
+        val body = remoteMessage.notification?.body ?: ""
+        
+        Log.d("FCM_MESSAGE", "Ön planda mesaj alındı: $title")
+
+        // Firebase, uygulama açıkken sistem bildirimini otomatik ÇIKARMAZ.
+        // Bu yüzden Hilt EntryPoint ile kendi NotificationService'imizi alıp manuel olarak ekranda gösteriyoruz.
+        try {
+            val notificationService = EntryPointAccessors
+                .fromApplication(applicationContext, FcmEntryPoint::class.java)
+                .notificationService()
+                
+            notificationService.showPushNotification(title, body)
+        } catch (e: Exception) {
+            Log.e("FCM_MESSAGE", "Bildirim servisi alınamadı veya gösterilemedi: ${e.message}")
+        }
     }
 }
 
