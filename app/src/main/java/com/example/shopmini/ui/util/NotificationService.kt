@@ -43,4 +43,17 @@ class NotificationService @Inject constructor(
             .build()
         notificationManager.notify(1001, notification)
     }
+
+    /** Firebase'den ön plandayken gelen mesajları ekranda göstermek için genel metod */
+    fun showPushNotification(title: String, body: String) {
+        val notification = NotificationCompat.Builder(context, ORDER_CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
+        // Her bildirimin ekranda ayrı ayrı kalabilmesi için rastgele ID (şu anki zaman) veriyoruz
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+    }
 }
