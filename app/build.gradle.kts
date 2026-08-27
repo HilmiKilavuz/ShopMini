@@ -93,6 +93,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     // 5. Asenkron (Coroutines)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
+    // Firebase Task'larını coroutine ile kullanmak için (.await() desteği)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
     // 6. Dependency Injection (Hilt)
     implementation("com.google.dagger:hilt-android:2.59.2")
     ksp("com.google.dagger:hilt-android-compiler:2.59.2")

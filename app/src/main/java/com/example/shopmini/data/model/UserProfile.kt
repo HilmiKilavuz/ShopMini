@@ -30,5 +30,9 @@ data class UserProfile(
     val lastName: String,
 
     val phone: String?,
-    val email: String
+    val email: String,
+
+    /** Firebase Cloud Messaging cihaz token'ı. Sunucu push bildirimleri için kullanılır. */
+    @SerialName("fcm_token")
+    val fcmToken: String? = null
 )

@@ -20,3 +20,7 @@ build/
 google-services.json
 .kotlin/
 
+# Secrets & Environment Variables
+.env
+.env.*
+*.env

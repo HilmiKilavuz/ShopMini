@@ -6,6 +6,7 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 /**
@@ -80,9 +81,31 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): Result<Unit> = runCatching {
+        // 1. Giriş yap
         supaBase.auth.signInWith(Email) {
             this.email = email
             this.password = password
+        }
+
+        // 2. Giriş başarılı → mevcut FCM token'ı al ve Supabase'e kaydet
+        //    onNewToken sadece token değişince tetiklenir; bu satır her girişte çalışır.
+        val userId = supaBase.auth.currentUserOrNull()?.id
+        if (userId != null) {
+            try {
+                val token = com.google.firebase.messaging.FirebaseMessaging
+                    .getInstance()
+                    .token
+                    .await()                                    // Kotlin coroutine uzantısı
+                supaBase.from("profiles").update(
+                    mapOf("fcm_token" to token)
+                ) {
+                    filter { eq("id", userId) }
+                }
+                android.util.Log.d("FCM_TOKEN", "Giriş sonrası token kaydedildi.")
+            } catch (e: Exception) {
+                // Token kaydedilemese de giriş başarılı sayılır
+                android.util.Log.e("FCM_TOKEN", "Token kaydedilemedi: ${e.message}")
+            }
         }
     }
 
