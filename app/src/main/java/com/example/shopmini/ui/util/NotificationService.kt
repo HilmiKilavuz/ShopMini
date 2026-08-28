@@ -33,6 +33,8 @@ class NotificationService @Inject constructor(
         }
         notificationManager.createNotificationChannel(channel)
     }
+
+    //Bu fonksiyon artık aktif değil Firebase Tarafından gönderiliyor artık
     fun sendOrderConfirmationNotification(totalAmount: Double) {
         val notification = NotificationCompat.Builder(context, ORDER_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)

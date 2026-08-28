@@ -36,6 +36,7 @@ import com.example.shopmini.ui.screens.payment.PaymentScreen
 import com.example.shopmini.ui.screens.profile.ProfileScreen
 import com.example.shopmini.ui.screens.profile.address.AddEditAddressScreen
 import com.example.shopmini.ui.screens.profile.address.AddressesScreen
+import com.example.shopmini.ui.screens.profile.editprofile.EditProfileScreen
 import com.example.shopmini.ui.screens.profile.orders.OrdersScreen
 import com.example.shopmini.ui.screens.signup.SignUpScreen
 import com.example.shopmini.ui.screens.statistics.StatisticsScreen
@@ -122,7 +123,8 @@ class MainActivity : ComponentActivity() {
                                     onNavigateToLogin = { navController.navigate(Screen.Login) },
                                     onNavigateToAddresses = { navController.navigate(Screen.Addresses) },
                                     onNavigateToOrdersPage = {navController.navigate(Screen.Orders)},
-                                    onNavigateToStatistics = {navController.navigate(Screen.Statistics)})
+                                    onNavigateToStatistics = {navController.navigate(Screen.Statistics)},
+                                    onNavigateToEditProfile = {navController.navigate(Screen.EditProfile)})
 
 
 
@@ -138,7 +140,9 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(
                                 onNavigateToSignUp = { navController.navigate(Screen.SignUp) },
                                 onLoginSuccess = {
-                                    navController.popBackStack() // Geldiği ekrana geri döner
+                                    navController.navigate(Screen.Home) {
+                                        popUpTo(0)
+                                    }
                                 }
                             )
                         }
@@ -147,7 +151,9 @@ class MainActivity : ComponentActivity() {
                             SignUpScreen(
                                 onNavigateToLogin = { navController.popBackStack() },
                                 onSignUpSuccess = {
-                                    navController.popBackStack()
+                                    navController.navigate(Screen.Home) {
+                                        popUpTo(0)
+                                    }
                                 }
                             )
                         }
@@ -212,6 +218,10 @@ class MainActivity : ComponentActivity() {
                         composable<Screen.Statistics> {
                             StatisticsScreen(onNavigateBack = { navController.popBackStack() })
                         }
+                        composable<Screen.EditProfile> {
+                            EditProfileScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+
                     }
                 }
             }

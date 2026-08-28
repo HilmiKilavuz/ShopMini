@@ -155,4 +155,29 @@ class AuthRepositoryImpl @Inject constructor(
     override fun isUserLoggedIn(): Boolean {
         return supaBase.auth.currentSessionOrNull() != null
     }
+
+    override suspend fun updateProfile(
+        firstName: String,
+        lastName: String,
+        phone: String
+    ): Result<Unit> = runCatching {
+        val userId = supaBase.auth.currentUserOrNull()?.id
+            ?: throw Exception("Kullanıcı bulunamadı")
+        supaBase.from("profiles").update(
+            mapOf(
+                "first_name" to firstName,
+                "last_name"  to lastName,
+                "phone"      to phone.ifBlank { null }
+            )
+        ) {
+            filter { eq("id", userId) }
+        }
+    }
+
+    override suspend fun updatePassword(newPassword: String): Result<Unit> = runCatching {
+        supaBase.auth.updateUser {
+            password = newPassword
+        }
+    }
+
 }

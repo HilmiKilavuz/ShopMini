@@ -64,6 +64,11 @@ sealed class Screen {
     @Serializable
     object Statistics
 
+    //Profili Düzenle
+    @Serializable
+    object EditProfile
+
+
 
 
 }

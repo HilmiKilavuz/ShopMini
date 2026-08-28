@@ -2,8 +2,11 @@ package com.example.shopmini.di
 
 import com.example.shopmini.data.repository.AuthRepositoryImpl
 import com.example.shopmini.domain.repository.AuthRepository
+import com.example.shopmini.domain.usecase.auth.UpdatePasswordUseCase
+import com.example.shopmini.domain.usecase.auth.UpdateProfileUseCase
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -32,4 +35,12 @@ abstract class AuthModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+    companion object {
+        @Provides
+        fun provideUpdateProfileUseCase(repo: AuthRepository): UpdateProfileUseCase =
+            UpdateProfileUseCase(repo)
+        @Provides
+        fun provideUpdatePasswordUseCase(repo: AuthRepository): UpdatePasswordUseCase =
+            UpdatePasswordUseCase(repo)
+    }
 }
