@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
         val currentEmail = _email.value
         val currentPassword = _password.value
         val isEmailValid = Validators.isValidEmail(currentEmail)
-        val isPasswordValid = Validators.isValidPassword(currentPassword)
+        val isPasswordValid = currentPassword.isNotBlank()
         if (!isEmailValid || !isPasswordValid) {
             _uiState.update {
                 it.copy(
@@ -66,10 +66,16 @@ class LoginViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, isLoginSuccess = true) }
 
             }.onFailure { error ->
+                val errorMsg = error.message ?: ""
+                val displayMsg = if (errorMsg.contains("invalid_credentials", ignoreCase = true) || errorMsg.contains("Invalid login credentials", ignoreCase = true)) {
+                    "E-posta veya şifre hatalı."
+                } else {
+                    "Giriş yapılırken bir hata oluştu."
+                }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = error.localizedMessage ?: "Giriş yapılırken bir hata oluştu"
+                        errorMessage = displayMsg
                     )
                 }
             }
