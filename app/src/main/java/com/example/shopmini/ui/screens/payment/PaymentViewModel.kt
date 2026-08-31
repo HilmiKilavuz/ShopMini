@@ -69,9 +69,10 @@ class PaymentViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(cardHolderName = holderName)
     }
 
-    fun onExpiryDateChange(expiryDate: String) {
-        if (expiryDate.length > 5) return
-        _uiState.value = _uiState.value.copy(expiryDate = expiryDate)
+    fun onExpiryDateChange(newValue: String) {
+        // Sadece rakamları al, "/" otomatik eklenmez — VisualTransformation Screen'de halleder
+        val digits = newValue.filter { it.isDigit() }.take(4)
+        _uiState.value = _uiState.value.copy(expiryDate = digits)
     }
 
     fun onCvvChange(cvv: String) {
@@ -211,12 +212,14 @@ class PaymentViewModel @Inject constructor(
     }
 
     private fun validateExpiryDate(date: String): String? {
-        if (!Validators.isValidValidateExpiry(date)) return "Geçersiz format (AA/YY)"
-        val parts = date.split("/")
-        val month = parts[0].toInt()
-        val year = parts[1].toInt() + 2000
+        // date: ham rakamlar ("MMYY") — görünümde "MM/YY"
+        val digits = date.filter { it.isDigit() }
+        if (digits.length != 4) return "Geçersiz format (AA/YY)"
+        val month = digits.take(2).toInt()
+        val year  = digits.drop(2).toInt() + 2000
+        if (month < 1 || month > 12) return "Geçersiz ay (01-12)"
         val now = java.util.Calendar.getInstance()
-        val currentYear = now.get(java.util.Calendar.YEAR)
+        val currentYear  = now.get(java.util.Calendar.YEAR)
         val currentMonth = now.get(java.util.Calendar.MONTH) + 1
         return when {
             year < currentYear -> "Kartın süresi dolmuş"

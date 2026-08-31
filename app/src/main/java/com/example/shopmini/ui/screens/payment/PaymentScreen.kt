@@ -58,8 +58,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.shopmini.ui.theme.Teal40
 import com.example.shopmini.ui.theme.TealGrey40
+
+/**
+ * Sadece rakam içeren expiryDate state'ini görünümde "MM/YY" formatında gösterir.
+ * İçeride state her zaman temiz rakamları (örn. "1231") tutar.
+ */
+private class ExpiryDateVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val digits = text.text.filter { it.isDigit() }.take(4)
+        val out = if (digits.length >= 3) "${digits.take(2)}/${digits.drop(2)}" else digits
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int =
+                if (offset <= 2) offset else offset + 1 // "/" için +1
+            override fun transformedToOriginal(offset: Int): Int =
+                if (offset <= 2) offset else (offset - 1).coerceAtLeast(0)
+        }
+        return TransformedText(AnnotatedString(out), offsetMapping)
+    }
+}
 
 //Ödeme Ekranı Tasarımı
 @OptIn(ExperimentalMaterial3Api::class)
@@ -167,6 +189,7 @@ fun PaymentScreen(
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        visualTransformation = ExpiryDateVisualTransformation(),
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -199,7 +222,10 @@ fun PaymentScreen(
                 CardPreview(
                     cardNumber = uiState.cardNumber,
                     cardHolderName = uiState.cardHolderName,
-                    expiryDate = uiState.expiryDate
+                    // Ham rakamları "MM/YY" formatında göster
+                    expiryDate = uiState.expiryDate.let { d ->
+                        if (d.length >= 3) "${d.take(2)}/${d.drop(2)}" else d
+                    }
                 )
 
                 // ── İndirim Kuponu Bölümü ──

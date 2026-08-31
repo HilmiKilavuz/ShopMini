@@ -5,7 +5,7 @@ import com.example.shopmini.domain.model.Coupon
 data class PaymentUiState(
     val cardNumber: String = "",
     val cardHolderName: String = "",
-    val expiryDate: String = "",   // "MM/YY" formatında
+    val expiryDate: String = "",   // Ham rakamlar: "MMYY" (maks 4 basamak); görünümde "MM/YY"
     val cvv: String = "",
     // Hata mesajları — null ise hata yok
     val cardNumberError: String? = null,
