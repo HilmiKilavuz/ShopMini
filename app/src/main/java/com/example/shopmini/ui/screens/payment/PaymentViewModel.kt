@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopmini.domain.usecase.cart.ClearCartUseCase
 import com.example.shopmini.domain.usecase.cart.GetCartItemsUseCase
+import com.example.shopmini.domain.usecase.coupon.ValidateCouponUseCase
 import com.example.shopmini.domain.usecase.order.SaveOrderUseCase
 import com.example.shopmini.ui.util.AnalyticsManager
 import com.example.shopmini.ui.util.Validators
@@ -22,35 +23,123 @@ import javax.inject.Inject
 class PaymentViewModel @Inject constructor(
     private val getCartItemsUseCase: GetCartItemsUseCase, // Sepeti okumak için
     private val saveOrderUseCase: SaveOrderUseCase,       // Siparişi kaydetmek için
-    private val clearCartUseCase: ClearCartUseCase, // Sepeti temizlemek için
+    private val clearCartUseCase: ClearCartUseCase,       // Sepeti temizlemek için
+    private val validateCouponUseCase: ValidateCouponUseCase, // Kupon doğrulamak için
     private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PaymentUiState())
     val uiState: StateFlow<PaymentUiState> = _uiState.asStateFlow()
 
+    init {
+        // Ekran açılınca sepet tutarlarını önceden hesapla
+        loadCartTotals()
+    }
+
+    /**
+     * Sepet ürünlerinden ara toplamı, ürün indirimlerini ve
+     * nihai tutarı hesaplayarak UiState'e yazar.
+     */
+    private fun loadCartTotals() {
+        viewModelScope.launch {
+            val cartItems = getCartItemsUseCase().first()
+            val subtotal = cartItems.sumOf { it.price * it.quantity }
+            val productDiscount =
+                cartItems.sumOf { it.price * it.quantity * (it.discountPercentage / 100) }
+            val afterProductDiscount = subtotal - productDiscount
+            _uiState.update {
+                it.copy(
+                    subtotal = subtotal,
+                    productDiscount = productDiscount,
+                    finalAmount = afterProductDiscount
+                )
+            }
+        }
+    }
+
+    // ──────────────────────────────────────────────────
+    // Kart alanı güncelleyicileri
+    // ──────────────────────────────────────────────────
+
     fun onCardNumberChange(cardNumber: String) {
         if (cardNumber.length > 16) return
         _uiState.value = _uiState.value.copy(cardNumber = cardNumber)
-
     }
 
     fun onCardHolderNameChange(holderName: String) {
         _uiState.value = _uiState.value.copy(cardHolderName = holderName)
-
     }
 
     fun onExpiryDateChange(expiryDate: String) {
         if (expiryDate.length > 5) return
-            _uiState.value = _uiState.value.copy(expiryDate = expiryDate)
-
-
+        _uiState.value = _uiState.value.copy(expiryDate = expiryDate)
     }
 
     fun onCvvChange(cvv: String) {
         if (cvv.length > 3) return
         _uiState.value = _uiState.value.copy(cvv = cvv)
-
     }
+
+    // ──────────────────────────────────────────────────
+    // Kupon işlemleri
+    // ──────────────────────────────────────────────────
+
+    /** Kullanıcı kupon alanına yazarken çağrılır; önceki hatayı temizler. */
+    fun onCouponCodeChange(code: String) {
+        _uiState.update { it.copy(couponCode = code, couponError = null) }
+    }
+
+    /** "Uygula" butonuna basıldığında kupon Supabase'den doğrulanır. */
+    fun onApplyCoupon() {
+        val code = _uiState.value.couponCode.trim()
+        if (code.isBlank()) {
+            _uiState.update { it.copy(couponError = "Kupon kodu boş olamaz") }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isValidatingCoupon = true, couponError = null) }
+            val coupon = validateCouponUseCase(code)
+            if (coupon == null) {
+                _uiState.update {
+                    it.copy(
+                        isValidatingCoupon = false,
+                        couponError = "Geçersiz veya süresi dolmuş kupon kodu"
+                    )
+                }
+            } else {
+                // Kupon indirimini ürün indirimi sonrası tutara uygula
+                val afterProductDiscount = _uiState.value.subtotal - _uiState.value.productDiscount
+                val couponDiscountAmount = afterProductDiscount * (coupon.discountPercent / 100.0)
+                val finalAmount = afterProductDiscount - couponDiscountAmount
+                _uiState.update {
+                    it.copy(
+                        isValidatingCoupon = false,
+                        appliedCoupon = coupon,
+                        couponDiscountAmount = couponDiscountAmount,
+                        finalAmount = finalAmount,
+                        couponError = null
+                    )
+                }
+            }
+        }
+    }
+
+    /** "Kaldır" butonuna basıldığında kupon sıfırlanır ve tutar eski haline döner. */
+    fun onRemoveCoupon() {
+        val afterProductDiscount = _uiState.value.subtotal - _uiState.value.productDiscount
+        _uiState.update {
+            it.copy(
+                appliedCoupon = null,
+                couponCode = "",
+                couponError = null,
+                couponDiscountAmount = 0.0,
+                finalAmount = afterProductDiscount
+            )
+        }
+    }
+
+    // ──────────────────────────────────────────────────
+    // Ödeme
+    // ──────────────────────────────────────────────────
 
     fun onPayClicked() {
         val cardNumberError = validateCardNumber(_uiState.value.cardNumber)
@@ -71,10 +160,8 @@ class PaymentViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             delay(2000L)
             val cartItems = getCartItemsUseCase().first()
-            val subtotal = cartItems.sumOf { it.price * it.quantity }
-            val discountTotal =
-                cartItems.sumOf { it.price * it.quantity * (it.discountPercentage / 100) }
-            val totalAmount = subtotal - discountTotal
+            // finalAmount: ürün indirimleri + kupon indirimi uygulandıktan sonraki tutar
+            val totalAmount = _uiState.value.finalAmount
             saveOrderUseCase(cartItems, totalAmount)
             analyticsManager.logPurchase(totalAmount, "")
             clearCartUseCase()
@@ -82,10 +169,11 @@ class PaymentViewModel @Inject constructor(
 
             _uiState.update { it.copy(isLoading = false, isPaymentSuccessful = true) }
         }
-
-
     }
 
+    // ──────────────────────────────────────────────────
+    // Doğrulama yardımcıları
+    // ──────────────────────────────────────────────────
 
     private fun luhnCheck(cardNumber: String): Boolean {
         val digits = cardNumber.filter { it.isDigit() }
@@ -102,7 +190,6 @@ class PaymentViewModel @Inject constructor(
             isEven = !isEven
         }
         return sum % 10 == 0
-
     }
 
     private fun validateCardNumber(number: String): String? {
@@ -121,12 +208,9 @@ class PaymentViewModel @Inject constructor(
             !Validators.isValidFullName(name) -> "Kart sahibinin adı geçersiz"
             else -> null
         }
-
     }
 
-
     private fun validateExpiryDate(date: String): String? {
-
         if (!Validators.isValidValidateExpiry(date)) return "Geçersiz format (AA/YY)"
         val parts = date.split("/")
         val month = parts[0].toInt()
@@ -139,8 +223,6 @@ class PaymentViewModel @Inject constructor(
             year == currentYear && month < currentMonth -> "Kartın süresi dolmuş"
             else -> null
         }
-
-
     }
 
     private fun validateCvv(cvv: String): String? {
@@ -149,8 +231,5 @@ class PaymentViewModel @Inject constructor(
             !cvv.all { it.isDigit() } -> "CVV sadece rakam içermelidir"
             else -> null
         }
-
-
     }
-
 }
