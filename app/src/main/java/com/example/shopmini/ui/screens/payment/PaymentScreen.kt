@@ -4,26 +4,36 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +42,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
@@ -161,10 +172,8 @@ fun PaymentScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Teal40,
                             focusedLabelColor = Teal40,
-                            cursorColor = Teal40,
-
-                            )
-
+                            cursorColor = Teal40
+                        )
                     )
                     OutlinedTextField(
                         value = uiState.cvv,
@@ -183,10 +192,8 @@ fun PaymentScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Teal40,
                             focusedLabelColor = Teal40,
-                            cursorColor = Teal40,
-
-                            )
-
+                            cursorColor = Teal40
+                        )
                     )
                 }
                 CardPreview(
@@ -195,23 +202,179 @@ fun PaymentScreen(
                     expiryDate = uiState.expiryDate
                 )
 
+                // ── İndirim Kuponu Bölümü ──
+                CouponSection(
+                    couponCode = uiState.couponCode,
+                    couponError = uiState.couponError,
+                    isValidating = uiState.isValidatingCoupon,
+                    appliedCouponCode = uiState.appliedCoupon?.code,
+                    appliedDiscountPercent = uiState.appliedCoupon?.discountPercent,
+                    onCouponCodeChange = viewModel::onCouponCodeChange,
+                    onApplyCoupon = viewModel::onApplyCoupon,
+                    onRemoveCoupon = viewModel::onRemoveCoupon
+                )
             }
 
-
-            // Sabit alt bar
+            // Sabit alt özet çubuğu
             PaymentSummaryBar(
                 isLoading = uiState.isLoading,
+                subtotal = uiState.subtotal,
+                productDiscount = uiState.productDiscount,
+                couponDiscountAmount = uiState.couponDiscountAmount,
+                appliedCouponCode = uiState.appliedCoupon?.code,
+                finalAmount = uiState.finalAmount,
                 onPayClicked = viewModel::onPayClicked
             )
         }
     }
-
-
 }
+
+// ──────────────────────────────────────────────────────────────
+// Kupon bölümü
+// ──────────────────────────────────────────────────────────────
+
+@Composable
+private fun CouponSection(
+    couponCode: String,
+    couponError: String?,
+    isValidating: Boolean,
+    appliedCouponCode: String?,
+    appliedDiscountPercent: Int?,
+    onCouponCodeChange: (String) -> Unit,
+    onApplyCoupon: () -> Unit,
+    onRemoveCoupon: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Başlık
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.LocalOffer,
+                    contentDescription = null,
+                    tint = Teal40,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "İndirim Kuponu",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Kupon uygulanmadıysa giriş alanını göster
+            AnimatedVisibility(visible = appliedCouponCode == null, enter = fadeIn(), exit = fadeOut()) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    OutlinedTextField(
+                        value = couponCode,
+                        onValueChange = onCouponCodeChange,
+                        label = { Text("Kupon Kodu") },
+                        placeholder = { Text("Örn: SHOPOFF10") },
+                        isError = couponError != null,
+                        supportingText = {
+                            couponError?.let {
+                                Text(it, color = MaterialTheme.colorScheme.error)
+                            }
+                        },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Teal40,
+                            focusedLabelColor = Teal40,
+                            cursorColor = Teal40
+                        )
+                    )
+                    Button(
+                        onClick = onApplyCoupon,
+                        enabled = !isValidating,
+                        modifier = Modifier
+                            .height(56.dp)
+                            .align(Alignment.CenterVertically),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Teal40)
+                    ) {
+                        if (isValidating) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text("Uygula", color = Color.White, fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+                }
+            }
+
+            // Kupon uygulandıysa başarı durumunu göster
+            AnimatedVisibility(visible = appliedCouponCode != null, enter = fadeIn(), exit = fadeOut()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = Teal40,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column {
+                            Text(
+                                text = appliedCouponCode ?: "",
+                                fontWeight = FontWeight.Bold,
+                                color = Teal40,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "%${appliedDiscountPercent} indirim uygulandı!",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    TextButton(onClick = onRemoveCoupon) {
+                        Text(
+                            text = "Kaldır",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 13.sp
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────────────────────
+// Ödeme özet çubuğu
+// ──────────────────────────────────────────────────────────────
 
 @Composable
 private fun PaymentSummaryBar(
-    isLoading: Boolean, onPayClicked: () -> Unit
+    isLoading: Boolean,
+    subtotal: Double,
+    productDiscount: Double,
+    couponDiscountAmount: Double,
+    appliedCouponCode: String?,
+    finalAmount: Double,
+    onPayClicked: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -220,9 +383,56 @@ private fun PaymentSummaryBar(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
+            // Ara toplam
+            SummaryRow(label = "Ara Toplam", amount = subtotal)
+
+            // Ürün indirimi — sadece varsa göster
+            if (productDiscount > 0) {
+                SummaryRow(
+                    label = "Ürün İndirimi",
+                    amount = -productDiscount,
+                    isDiscount = true
+                )
+            }
+
+            // Kupon indirimi — sadece uygulandıysa göster
+            if (couponDiscountAmount > 0 && appliedCouponCode != null) {
+                SummaryRow(
+                    label = "Kupon ($appliedCouponCode)",
+                    amount = -couponDiscountAmount,
+                    isDiscount = true
+                )
+            }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 4.dp),
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
+
+            // Ödenecek — kalın ve büyük
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Ödenecek",
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "₺ %.2f".format(finalAmount),
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Teal40
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Devam butonu — teal gradient
             Button(
                 onClick = onPayClicked,
@@ -246,18 +456,54 @@ private fun PaymentSummaryBar(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "İşlemi Tamamla →",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = "İşlemi Tamamla →",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+/** Özet satırı yardımcısı */
+@Composable
+private fun SummaryRow(
+    label: String,
+    amount: Double,
+    isDiscount: Boolean = false
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = if (isDiscount) "-₺ %.2f".format(-amount) else "₺ %.2f".format(amount),
+            fontSize = 14.sp,
+            color = if (isDiscount) Teal40 else MaterialTheme.colorScheme.onSurface,
+            fontWeight = if (isDiscount) FontWeight.Medium else FontWeight.Normal
+        )
+    }
+}
+
+// ──────────────────────────────────────────────────────────────
+// Kart önizlemesi (değişmedi)
+// ──────────────────────────────────────────────────────────────
 
 @Composable
 private fun CardPreview(
@@ -323,4 +569,3 @@ private fun CardPreview(
         }
     }
 }
-
